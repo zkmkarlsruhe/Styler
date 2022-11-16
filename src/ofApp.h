@@ -86,12 +86,12 @@ class ofApp : public ofBaseApp {
 		// image input & output size expected by model
 		//const static int imageWidth = 1280;
 		//const static int imageHeight = 720;
-		const static int imageWidth = 1920;
-		const static int imageHeight = 1080;
+		//const static int imageWidth = 1920;
+		//const static int imageHeight = 1080;
 		//const static int imageWidth = 640;
 		//const static int imageHeight = 360;
-		//const static int imageWidth = 3840;
-		//const static int imageHeight = 2160;
+		const static int imageWidth = 3840;
+		const static int imageHeight = 2160;
 
 		// style image size expected by model
 		static const int styleWidth = 256;

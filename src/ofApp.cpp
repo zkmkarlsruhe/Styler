@@ -28,13 +28,15 @@ void ofApp::setup() {
 	setStyle(stylePaths[styleIndex]);
 
 	// input source
-	setCameraSource();
+	//setCameraSource();
+	setImageSource();
 	source.image.player.setFrameTime(3000);
 
 	// output image
 	scaler.width = imageWidth;
 	scaler.height = imageHeight;
 	ofSetWindowShape(imageWidth, imageHeight);
+	ofToggleFullscreen();
 
 	styleTransfer.startThread();
 }
@@ -172,7 +174,7 @@ void ofApp::keyPressed(int key) {
 		case 's':
 			ofDirectory::createDirectory("output");
 			ofSaveImage(styleTransfer.getOutput().getPixels(),
-			            "output/"+ofGetTimestampString("%m-%d-%Y_%h-%M-%S")+".png");
+			            "output/"+ofGetTimestampString("%m-%d-%Y_%H-%M-%S")+".png");
 			break;
 		case 'd':
 			debug = !debug;
