@@ -76,10 +76,11 @@ class ofApp : public ofBaseApp {
 			bool horz = false;
 		} mirror;
 		std::vector<std::string> imagePaths = {
-			"style/pand.png",
-			"style/ani.png",
-			"style/noob.png",
-			"style/rab.png"
+			"image/res/Glockefertig.jpeg",
+			"image/res/Glockefinal.jpeg",
+			"image/res/Glocke H.jpeg",
+			//"image/res/kisspng-button-logo-computer-icons-electrical-switches-cli-off-5ac20378a30904.6318712615226643126678.jpg",
+			"image/res/Runde 2 Glocke.jpeg"
 		};
 		std::string videoPath = "movie.mp4";
 
@@ -107,6 +108,12 @@ class ofApp : public ofBaseApp {
 			"style/ani.png",
 			"style/noob.png",
 			"style/rab.png"
+
+			//"output/ok/11-16-2022_17-32-19.png",
+			//"output/ok/11-16-2022_17-32-33.png",
+			//"output/ok/11-16-2022_17-32-44.png",
+			//"output/ok/11-16-2022_17-33-17.png",
+			//"output/ok/11-16-2022_17-39-26.png"
 		};
 		std::size_t styleIndex = 0; // current model path index
 };
