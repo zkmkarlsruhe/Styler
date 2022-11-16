@@ -24,6 +24,7 @@ class ImagePlayer {
 		bool load(const std::vector<std::string> & paths) {
 			this->paths = paths;
 			setImage(this->paths[index]);
+			return true;
 		}
 
 		void close() {
@@ -103,6 +104,8 @@ class ImagePlayer {
 
 		const ofPixels & getPixels() const {return image.getPixels();}
 
+		bool isLastFrame() {return index == paths.size()-1;}
+
 	protected:
 
 		void setImage(std::string & path) {
@@ -112,7 +115,7 @@ class ImagePlayer {
 			frameSet = true; // signal new frame in update()
 		}
 
-	std::vector<std::string> paths; ///< image file paths, min 1 required
+	    std::vector<std::string> paths; ///< image file paths, min 1 required
 		std::size_t index = 0; ///< image path index
 		ofImage image; ///< current image
 		bool newFrame = false; ///< outward frame change indicator

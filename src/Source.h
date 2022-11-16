@@ -24,7 +24,7 @@ class Source {
 		virtual const ofPixels & getPixels() = 0;
 		virtual int getWidth()  = 0;
 		virtual int getHeight() = 0;
-		virtual bool setPaused(bool paused) {}
+		virtual void setPaused(bool paused) {}
 		virtual bool isPaused() {return false;}
 		virtual void nextFrame() {}
 		virtual void previousFrame() {}
@@ -45,7 +45,7 @@ class ImageSource : public Source {
 		const ofPixels & getPixels() {return player.getPixels();}
 		int getWidth() {return player.getWidth();}
 		int getHeight() {return player.getHeight();}
-		bool setPaused(bool paused) {player.setPaused(paused);}
+		void setPaused(bool paused) {player.setPaused(paused);}
 		bool isPaused() {return player.isPaused();}
 		void nextFrame() {player.nextFrame();}
 		void previousFrame() {player.previousFrame();}
@@ -66,7 +66,7 @@ class PlayerSource : public Source {
 		const ofPixels & getPixels() {return player.getPixels();}
 		int getWidth() {return player.getWidth();}
 		int getHeight() {return player.getHeight();}
-		bool setPaused(bool paused) {player.setPaused(paused);}
+		void setPaused(bool paused) {player.setPaused(paused);}
 		bool isPaused() {return player.isPaused();}
 		void nextFrame() {player.nextFrame();}
 		void previousFrame() {player.previousFrame();}
@@ -99,7 +99,7 @@ class CameraSource : public Source {
 		const ofPixels & getPixels() {return grabber->getPixels();}
 		int getWidth() {return grabber->getWidth();}
 		int getHeight() {return grabber->getHeight();}
-		bool setPaused(bool paused) {}
+		void setPaused(bool paused) {}
 		bool isPaused() {return false;}
 		void nextFrame() {}
 		void previousFrame() {}

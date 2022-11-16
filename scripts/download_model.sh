@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #
 # script to download pre-trained models for the example projects
 #

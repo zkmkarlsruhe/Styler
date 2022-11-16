@@ -52,6 +52,9 @@ void ofApp::update() {
 			styleTransfer.setInput(source.current->getPixels());
 		}
 		updateFrame = false;
+		if(source.current == &source.image && source.image.player.isPlaying() && source.image.player.isLastFrame()) {
+			nextStyle();
+		}
 	}
 	styleTransfer.update();
 }
@@ -61,7 +64,17 @@ void ofApp::draw() {
 
 	ofPushMatrix();
 		scaler.apply();
-		styleTransfer.draw(0, 0);
+		if(styleInput) {
+			ofImage image;
+			const ofPixels & pixels = source.current->getPixels();
+			image.allocate(pixels.getWidth(), pixels.getHeight(), OF_IMAGE_COLOR);
+			image.setFromPixels(pixels);
+			image.update();
+			image.draw(0, 0);
+		}
+		else {
+			styleTransfer.draw(0, 0);
+		}
 	ofPopMatrix();
 
 	if(debug) {
@@ -137,12 +150,20 @@ void ofApp::keyPressed(int key) {
 			mirror.vert = !mirror.vert;
 			break;
 		case ' ':
-			source.current->setPaused(!source.current->isPaused());
+			if(!styleInput) {
+				source.current->setPaused(!source.current->isPaused());
+			}
+			else {
+				takeStyle();
+			}
 			break;
 		case 'r':
 			// restart video
 			source.current->stop();
 			source.current->play();
+			break;
+		case 'k':
+			styleInput = !styleInput;
 			break;
 		case 'f':
 			ofToggleFullscreen();
@@ -157,6 +178,14 @@ void ofApp::keyPressed(int key) {
 			break;
 		default: break;
 	}
+}
+
+void ofApp::takeStyle() {
+	ofImage image;
+	const ofPixels & pixels = source.current->getPixels();
+	image.allocate(pixels.getWidth(), pixels.getHeight(), OF_IMAGE_COLOR);
+	image.setFromPixels(pixels);
+	styleTransfer.setStyle(image.getPixels());
 }
 
 //--------------------------------------------------------------
@@ -267,6 +296,6 @@ void ofApp::setImageSource() {
 	source.video.close();
 	source.camera.close();
 	source.image.open(imagePaths);
-	//source.image.play();
+	source.image.play();
 	source.current = &source.image;
 }

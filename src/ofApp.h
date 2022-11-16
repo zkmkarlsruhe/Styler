@@ -76,30 +76,37 @@ class ofApp : public ofBaseApp {
 			bool horz = false;
 		} mirror;
 		std::vector<std::string> imagePaths = {
-			"image/intelligent-museum.png",
-//			"image/65600611.jpg",
-//			"image/BGR_2915.jpg",
-			"image/wald.jpg"
+			"style/pand.png",
+			"style/ani.png",
+			"style/noob.png",
+			"style/rab.png"
 		};
 		std::string videoPath = "movie.mp4";
 
 		// image input & output size expected by model
-		const static int imageWidth = 640;
-		const static int imageHeight = 480;
+		//const static int imageWidth = 1280;
+		//const static int imageHeight = 720;
+		const static int imageWidth = 1920;
+		const static int imageHeight = 1080;
+		//const static int imageWidth = 640;
+		//const static int imageHeight = 360;
+		//const static int imageWidth = 3840;
+		//const static int imageHeight = 2160;
 
 		// style image size expected by model
 		static const int styleWidth = 256;
 		static const int styleHeight = 256;
 
+		bool styleInput = false;
+		void takeStyle();
+
 		// paths to available style images
 	    // TODO: build paths from style dir contents or config file
 		std::vector<std::string> stylePaths = {
-			"style/test/Bauernhaus.jpg",
-			"style/test/Schafstall.jpg",
-			"style/wave.jpg",
-			"style/ZKM000092996.jpg",
-			"style/chipset.jpg",
-			"style/mondrian.jpg"
+			"style/pand.png",
+			"style/ani.png",
+			"style/noob.png",
+			"style/rab.png"
 		};
 		std::size_t styleIndex = 0; // current model path index
 };

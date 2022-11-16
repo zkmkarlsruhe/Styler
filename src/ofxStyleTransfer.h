@@ -77,7 +77,7 @@ class ofxStyleTransfer {
 
 			// output
 			outputImage.allocate(size.width, size.height, OF_IMAGE_COLOR);
-			outputImage.getTexture().setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
+			//outputImage.getTexture().setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
 
 			return true;
 		}
