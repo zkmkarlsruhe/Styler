@@ -97,9 +97,10 @@ void ofApp::draw() {
 		        "r: restart video\n"
 		        "f: toggle fullscreen\n"
 		        "s: save image\n"
+		        "k: toggle style input mode\n"
 		        "right: next style\n"
 		        "left: prev style\n"
-		        "space: toggle playback\n"
+		        "space: toggle playback / take style image\n"
 		        "up: next frame\n"
 		        "down: prev frame\n"
 				"drag&drop style image";
