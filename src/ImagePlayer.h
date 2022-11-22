@@ -22,6 +22,7 @@ class ImagePlayer {
 	public:
 
 		bool load(const std::vector<std::string> & paths) {
+			if(paths.empty()) {return false;}
 			this->paths = paths;
 			setImage(this->paths[index]);
 			return true;
@@ -46,6 +47,14 @@ class ImagePlayer {
 			else { // nothing to do
 				newFrame = false;
 			}
+		}
+
+		void draw(float x, float y) {
+			image.draw(x, y);
+		}
+
+		void draw(float x, float y, float w, float h) {
+			image.draw(x, y, w, h);
 		}
 
 		bool isFrameNew() const {return newFrame;}
@@ -73,10 +82,6 @@ class ImagePlayer {
 
 		bool isLoaded() const {return image.isAllocated();}
 		bool isPlaying() const {return playing;}
-
-		void draw(float x=0, float y=0, float w=0, float h=0) {
-			image.draw(x, y, w, h);
-		}
 
 		void previousFrame() {
 			if(index == 0) {
@@ -124,5 +129,5 @@ class ImagePlayer {
 		bool playing = false; ///< is playback enabled?
 		bool paused = false; ///< is playback paused?
 		long timestamp = 0; ///< playback timestamp
-		int frameTime = 1000; ///< plaback frame time in ms
+		int frameTime = 1000; ///< playback frame time in ms
 };

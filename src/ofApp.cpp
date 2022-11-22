@@ -22,14 +22,26 @@ void ofApp::setup() {
 	ofSetWindowTitle("Styler");
 	ofBackground(0);
 
+	// find style image paths
 	if(!styleTransfer.setup(imageWidth, imageHeight)) {
+		std::exit(EXIT_FAILURE);
+	}
+	stylePaths = listImagePaths("style");
+	if(stylePaths.empty()) {
+		ofLogError("no style images found in bin/data/style");
 		std::exit(EXIT_FAILURE);
 	}
 	setStyle(stylePaths[styleIndex]);
 
+	// find input image paths
+	imagePaths = listImagePaths("image");
+	if(imagePaths.empty()) {
+		ofLogError("no images found in bin/data/image");
+		std::exit(EXIT_FAILURE);
+	}
+
 	// input source
-	//setCameraSource();
-	setImageSource();
+	setCameraSource();
 	source.image.player.setFrameTime(3000);
 
 	// output image
@@ -45,6 +57,9 @@ void ofApp::setup() {
 void ofApp::update() {
 	source.current->update();
 	if(source.current->isFrameNew() || updateFrame) {
+		if(styleAuto && wasLastFrame && !updateFrame && !source.current->isPaused()) {
+			nextStyle();
+		}
 		if(source.current == &source.camera && (mirror.vert || mirror.horz)) {
 			ofPixels pixels(source.current->getPixels());
 			pixels.mirror(mirror.vert, mirror.horz);
@@ -54,9 +69,7 @@ void ofApp::update() {
 			styleTransfer.setInput(source.current->getPixels());
 		}
 		updateFrame = false;
-		if(source.current == &source.image && source.image.player.isPlaying() && source.image.player.isLastFrame()) {
-			nextStyle();
-		}
+		wasLastFrame = source.current->isLastFrame();
 	}
 	styleTransfer.update();
 }
@@ -67,12 +80,7 @@ void ofApp::draw() {
 	ofPushMatrix();
 		scaler.apply();
 		if(styleInput) {
-			ofImage image;
-			const ofPixels & pixels = source.current->getPixels();
-			image.allocate(pixels.getWidth(), pixels.getHeight(), OF_IMAGE_COLOR);
-			image.setFromPixels(pixels);
-			image.update();
-			image.draw(0, 0);
+			source.current->draw(0, 0);
 		}
 		else {
 			styleTransfer.draw(0, 0);
@@ -100,6 +108,7 @@ void ofApp::draw() {
 		        "f: toggle fullscreen\n"
 		        "s: save image\n"
 		        "k: toggle style input mode\n"
+		        "a: toggle auto style change\n"
 		        "right: next style\n"
 		        "left: prev style\n"
 		        "space: toggle playback / take style image\n"
@@ -168,6 +177,9 @@ void ofApp::keyPressed(int key) {
 		case 'k':
 			styleInput = !styleInput;
 			break;
+		case 'a':
+			styleAuto = !styleAuto;
+			break;
 		case 'f':
 			ofToggleFullscreen();
 			break;
@@ -181,14 +193,6 @@ void ofApp::keyPressed(int key) {
 			break;
 		default: break;
 	}
-}
-
-void ofApp::takeStyle() {
-	ofImage image;
-	const ofPixels & pixels = source.current->getPixels();
-	image.allocate(pixels.getWidth(), pixels.getHeight(), OF_IMAGE_COLOR);
-	image.setFromPixels(pixels);
-	styleTransfer.setStyle(image.getPixels());
 }
 
 //--------------------------------------------------------------
@@ -276,29 +280,52 @@ void ofApp::setStyle(std::string & path) {
 }
 
 //--------------------------------------------------------------
-// TODO: find movie by path?
+void ofApp::takeStyle() {
+	styleTransfer.setStyle(source.current->getPixels());
+}
+
+//--------------------------------------------------------------
 void ofApp::setVideoSource() {
-	source.camera.close();
-	source.image.close();
-	source.video.open(videoPath);
+	if(!source.video.open(videoPath)) {return;}
 	source.video.player.setVolume(0);
 	source.video.play();
 	source.current = &source.video;
+	source.camera.close();
+	source.image.close();
+	wasLastFrame = false;
 }
 
 //--------------------------------------------------------------
 void ofApp::setCameraSource() {
-	source.video.close();
-	source.image.close();
 	source.camera.setup(imageWidth, imageHeight);
 	source.current = &source.camera;
+	source.video.close();
+	source.image.close();
+	wasLastFrame = false;
 }
 
 //--------------------------------------------------------------
 void ofApp::setImageSource() {
-	source.video.close();
-	source.camera.close();
-	source.image.open(imagePaths);
+	if(!source.image.open(imagePaths)) {return;}
 	source.image.play();
 	source.current = &source.image;
+	source.video.close();
+	source.camera.close();
+	wasLastFrame = false;
+}
+
+//--------------------------------------------------------------
+std::vector<std::string> ofApp::listImagePaths(std::string dirPath) {
+	ofDirectory dir(dirPath);
+	dir.allowExt("jpg");
+	dir.allowExt("JPG");
+	dir.allowExt("jpeg");
+	dir.allowExt("png");
+	dir.allowExt("PNG");
+	std::size_t count = dir.listDir();
+	std::vector<std::string> paths;
+	for(std::size_t i = 0; i < count; ++i) {
+		paths.push_back(dir.getPath(i));
+	}
+	return paths;
 }

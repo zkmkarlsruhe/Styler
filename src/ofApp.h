@@ -52,21 +52,33 @@ class ofApp : public ofBaseApp {
 		/// set style from given input image
 		void setStyle(std::string & path);
 
+		/// take current source frame as style image
+		void takeStyle();
+
+		/// switch to video source
 		void setVideoSource();
+
+		/// switch to live camera source
 		void setCameraSource();
+
+		/// switch to image source
 		void setImageSource();
 
-		ofxStyleTransfer styleTransfer;
-		ofImage outputImage;
-		Scaler scaler; // scale output to window, keeps aspect
+		/// helper to get jpg & png paths in a given directory
+		std::vector<std::string> listImagePaths(std::string dirPath);
 
-		bool debug = false;
-		bool updateFrame = false;
+		ofxStyleTransfer styleTransfer; ///< model
+		Scaler scaler; ///< scale output to window, keeps aspect
+
+		bool debug = false; ///< show debug info?
+		bool updateFrame = false; ///< update current output?
+		bool styleInput = false; ///< style input mode?
+		bool styleAuto = false;  ///< change style automatically?
+		bool wasLastFrame = false; ///< was the prev source frame the last?
 
 		// input sources
-		// TODO: build paths from image / video dir contents or config file
 		struct {
-			Source *current = nullptr; //< set this before using!
+			Source *current = nullptr; ///< set this before using!
 			PlayerSource video;
 			CameraSource camera;
 			ImageSource image;
@@ -75,45 +87,19 @@ class ofApp : public ofBaseApp {
 			bool vert = false;
 			bool horz = false;
 		} mirror;
-		std::vector<std::string> imagePaths = {
-			"image/res/Glockefertig.jpeg",
-			"image/res/Glockefinal.jpeg",
-			"image/res/Glocke H.jpeg",
-			//"image/res/kisspng-button-logo-computer-icons-electrical-switches-cli-off-5ac20378a30904.6318712615226643126678.jpg",
-			"image/res/Runde 2 Glocke.jpeg"
-		};
+		std::vector<std::string> imagePaths;
 		std::string videoPath = "movie.mp4";
 
 		// image input & output size expected by model
-		//const static int imageWidth = 1280;
-		//const static int imageHeight = 720;
+		const static int imageWidth = 1280;
+		const static int imageHeight = 720;
 		//const static int imageWidth = 1920;
 		//const static int imageHeight = 1080;
 		//const static int imageWidth = 640;
 		//const static int imageHeight = 360;
-		const static int imageWidth = 3840;
-		const static int imageHeight = 2160;
+		//const static int imageWidth = 3840;
+		//const static int imageHeight = 2160;
 
-		// style image size expected by model
-		static const int styleWidth = 256;
-		static const int styleHeight = 256;
-
-		bool styleInput = false;
-		void takeStyle();
-
-		// paths to available style images
-	    // TODO: build paths from style dir contents or config file
-		std::vector<std::string> stylePaths = {
-			"style/pand.png",
-			"style/ani.png",
-			"style/noob.png",
-			"style/rab.png"
-
-			//"output/ok/11-16-2022_17-32-19.png",
-			//"output/ok/11-16-2022_17-32-33.png",
-			//"output/ok/11-16-2022_17-32-44.png",
-			//"output/ok/11-16-2022_17-33-17.png",
-			//"output/ok/11-16-2022_17-39-26.png"
-		};
-		std::size_t styleIndex = 0; // current model path index
+		std::vector<std::string> stylePaths; ///< paths to available style images
+		std::size_t styleIndex = 0; ///< current style path index
 };

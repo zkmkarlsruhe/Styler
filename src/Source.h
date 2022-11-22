@@ -20,6 +20,8 @@ class Source {
 	public:
 		virtual ~Source() {}
 		virtual void update() = 0;
+		virtual void draw(float x, float y) = 0;
+		virtual void draw(float x, float y, float w, float h) = 0;
 		virtual bool isFrameNew() = 0;
 		virtual const ofPixels & getPixels() = 0;
 		virtual int getWidth()  = 0;
@@ -28,6 +30,7 @@ class Source {
 		virtual bool isPaused() {return false;}
 		virtual void nextFrame() {}
 		virtual void previousFrame() {}
+		virtual bool isLastFrame() {return false;}
 		virtual void play() {}
 		virtual void stop() {}
 };
@@ -41,6 +44,8 @@ class ImageSource : public Source {
 		}
 		void close() {player.close();}
 		void update() {player.update();}
+		void draw(float x, float y) {player.draw(x, y);}
+		void draw(float x, float y, float w, float h) {player.draw(x, y, w, h);}
 		bool isFrameNew() {return player.isFrameNew();}
 		const ofPixels & getPixels() {return player.getPixels();}
 		int getWidth() {return player.getWidth();}
@@ -49,6 +54,7 @@ class ImageSource : public Source {
 		bool isPaused() {return player.isPaused();}
 		void nextFrame() {player.nextFrame();}
 		void previousFrame() {player.previousFrame();}
+		bool isLastFrame() {return player.isLastFrame();}
 		void play() {player.play();}
 		void stop() {player.stop();}
 };
@@ -62,6 +68,8 @@ class PlayerSource : public Source {
 		}
 		void close() {player.close();}
 		void update() {player.update();}
+		void draw(float x, float y) {player.draw(x, y);}
+		void draw(float x, float y, float w, float h) {player.draw(x, y, w, h);}
 		bool isFrameNew() {return player.isFrameNew();}
 		const ofPixels & getPixels() {return player.getPixels();}
 		int getWidth() {return player.getWidth();}
@@ -70,6 +78,7 @@ class PlayerSource : public Source {
 		bool isPaused() {return player.isPaused();}
 		void nextFrame() {player.nextFrame();}
 		void previousFrame() {player.previousFrame();}
+		bool isLastFrame() {return player.getCurrentFrame() == player.getTotalNumFrames();}
 		void play() {player.play();}
 		void stop() {player.stop();}
 };
@@ -80,11 +89,11 @@ class CameraSource : public Source {
 		// ofVideograbber doesn't seem to like setup()/close() cycles,
 		// so dynamically create an instance each time
 		ofVideoGrabber *grabber = nullptr;
-		bool setup(int w, int h, int deviceID=0) {
+		bool setup(int w, int h, int fps=30, int deviceID=0) {
 			close();
 			grabber = new ofVideoGrabber();
+			grabber->setDesiredFrameRate(fps);
 			grabber->setDeviceID(deviceID);
-			grabber->setDesiredFrameRate(30);
 			return grabber->setup(w, h);
 		}
 		void close() {
@@ -95,12 +104,10 @@ class CameraSource : public Source {
 			}
 		}
 		void update() {grabber->update();}
+		void draw(float x, float y) {grabber->draw(x, y);}
+		void draw(float x, float y, float w, float h) {grabber->draw(x, y, w, h);}
 		bool isFrameNew() {return grabber->isFrameNew();}
 		const ofPixels & getPixels() {return grabber->getPixels();}
 		int getWidth() {return grabber->getWidth();}
 		int getHeight() {return grabber->getHeight();}
-		void setPaused(bool paused) {}
-		bool isPaused() {return false;}
-		void nextFrame() {}
-		void previousFrame() {}
 };

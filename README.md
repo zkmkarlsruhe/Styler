@@ -81,7 +81,11 @@ Usage
 
 Styler applies a given style image onto an input image. The input image can come from one of three input sources: static image(s), video frames, or camera frames.
 
-Drag & drop animage onto the Styler window to load it as a new style.
+Style images as jpg or png files are read from the `bin/data/style` directory. Input images as jpg or png files are read from the `bin/data/image` directory. When Styler is started, both directories are listed for image paths automatically. Simply add/remove images from each and restart the application.
+
+_Note: a minimum of 1 iamge must be in each directory, otherwise Styler will exit on start due to missing input._
+
+While running, any images drag & dropped onto the Styler window will be loaded as a new style.
 
 ### Key Commands
 
@@ -93,11 +97,13 @@ Drag & drop animage onto the Styler window to load it as a new style.
 * `r`: restart video
 * `f`: toggle fullscreen
 * `s`: save output image to `bin/data/output` directory
+* `k`: toggle style input mode
+* `a`: toggle auto style change after last frame
 * `LEFT`: previous style
 * `RIGHT`: next style
-* `SPACE`: play/pause playback
+* `SPACE`: toggle playback / take style image
 * `UP`: next frame, when paused
-* `DOWN`: previous frame, when paused 
+* `DOWN`: previous frame, when paused
 
 The Intelligent Museum
 ----------------------
