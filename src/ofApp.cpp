@@ -41,6 +41,15 @@ void ofApp::setup() {
 		ofLogWarning("no images found in bin/data/image");
 	}
 
+	// find input video paths
+	auto videoPaths = listVideoPaths("video");
+	if(videoPaths.empty()) {
+		ofLogWarning("no videos found in bin/data/video");
+	}
+	else {
+		videoPath = videoPaths[0];
+	}
+
 	// input source
 	setCameraSource();
 	source.image.player.setFrameTime(3000);
@@ -337,6 +346,26 @@ std::vector<std::string> ofApp::listImagePaths(std::string dirPath) {
 	dir.allowExt("jpeg");
 	dir.allowExt("png");
 	dir.allowExt("PNG");
+	dir.sort();
+	std::size_t count = dir.listDir();
+	std::vector<std::string> paths;
+	for(std::size_t i = 0; i < count; ++i) {
+		paths.push_back(dir.getPath(i));
+	}
+	return paths;
+}
+
+//--------------------------------------------------------------
+// TODO: add more extensions?
+std::vector<std::string> ofApp::listVideoPaths(std::string dirPath) {
+	ofDirectory dir(dirPath);
+	dir.allowExt("mov");
+	dir.allowExt("MOV");
+	dir.allowExt("mp4");
+	dir.allowExt("MP4");
+	dir.allowExt("avi");
+	dir.allowExt("AVI");
+	dir.sort();
 	std::size_t count = dir.listDir();
 	std::vector<std::string> paths;
 	for(std::size_t i = 0; i < count; ++i) {

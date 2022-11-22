@@ -67,6 +67,9 @@ class ofApp : public ofBaseApp {
 		/// helper to get jpg & png paths in a given directory
 		std::vector<std::string> listImagePaths(std::string dirPath);
 
+		/// helper to get mov, mp4, & avi paths in a given directory
+		std::vector<std::string> listVideoPaths(std::string dirPath);
+
 		ofxStyleTransfer styleTransfer; ///< model
 		Scaler scaler; ///< scale output to window, keeps aspect
 
@@ -94,9 +97,9 @@ class ofApp : public ofBaseApp {
 			bool horz = false;
 		} mirror;
 		std::vector<std::string> imagePaths;
-		std::string videoPath = "movie.mp4";
+		std::string videoPath = "";
 
-		// image input & output size expected by model
+		// image input & output size
 		//const static int imageWidth = 1280;
 		//const static int imageHeight = 720;
 		//const static int imageWidth = 1920;

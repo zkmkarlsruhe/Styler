@@ -81,9 +81,18 @@ Usage
 
 Styler applies a given style image onto an input image. The input image can come from one of three input sources: static image(s), video frames, or camera frames.
 
-Style images as jpg or png files are read from the `bin/data/style` directory. Input images as jpg or png files are read from the `bin/data/image` directory. When Styler is started, both directories are listed for image paths automatically. Simply add/remove images from each and restart the application.
+Styler starts in fullscreen and uses the camera source by default.
 
-_Note: a minimum of 1 image must be in the style directory, otherwise Styler will exit on start due to missing input. If the input image directory is empty, the image source will be disabled._
+### Input
+
+Styler lists image and video paths automatically on start from the following directories:
+* `bin/data/style`: style images, jpg or png (required)
+* `bin/data/image`: input images, jpg or png, all paths added to playlist
+* `bin/data/video`: input video files, mov or mp4 or avi, first path used only
+
+Simply add/remove files from each and restart the application. Order is sorted by filename.
+
+_Note: a minimum of 1 image must be in the style directory, otherwise Styler will exit on start due to missing input. If the input image or video directories are empty, the respective source will be disabled._
 
 While running, any images drag & dropped onto the Styler window will be loaded as a new style.
 
@@ -104,6 +113,13 @@ While running, any images drag & dropped onto the Styler window will be loaded a
 * `SPACE`: toggle playback / take style image
 * `UP`: next frame, when paused
 * `DOWN`: previous frame, when paused
+
+### Automatic Style Change
+
+When enabled, automatic style change will go to the next style based on the input source:
+* camera: every 20 seconds
+* image: when changing from the last iamge to the first image
+* video: when changing from the last frame to the first frame
 
 The Intelligent Museum
 ----------------------

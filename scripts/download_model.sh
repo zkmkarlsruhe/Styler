@@ -40,10 +40,10 @@ cd "$SRC"
 # unzip and place
 unzip model_style_transfer_arbitrary.zip
 rm -rf "$DEST"/bin/data/model
-#rm -rf "$DEST"/bin/data/movie.mp4
+#rm -rf "$DEST"/bin/data/video/movie.mp4
 #rm -rf "$DEST"/bin/data/style
 mv -v model "$DEST"/bin/data
-mv -v movie.mp4 "$DEST"/bin/data
+mv -v movie.mp4 "$DEST"/bin/data/video
 yes | mv -v style/* "$DEST"/bin/data/style
 
 # cleanup
