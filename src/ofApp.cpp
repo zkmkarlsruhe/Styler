@@ -22,10 +22,12 @@ void ofApp::setup() {
 	ofSetWindowTitle("Styler");
 	ofBackground(0);
 
-	// find style image paths
+	// laod model
 	if(!styleTransfer.setup(imageWidth, imageHeight)) {
 		std::exit(EXIT_FAILURE);
 	}
+
+	// find style image paths
 	stylePaths = listImagePaths("style");
 	if(stylePaths.empty()) {
 		ofLogError("no style images found in bin/data/style");
@@ -36,8 +38,7 @@ void ofApp::setup() {
 	// find input image paths
 	imagePaths = listImagePaths("image");
 	if(imagePaths.empty()) {
-		ofLogError("no images found in bin/data/image");
-		std::exit(EXIT_FAILURE);
+		ofLogWarning("no images found in bin/data/image");
 	}
 
 	// input source
@@ -57,8 +58,16 @@ void ofApp::setup() {
 void ofApp::update() {
 	source.current->update();
 	if(source.current->isFrameNew() || updateFrame) {
-		if(styleAuto && wasLastFrame && !updateFrame && !source.current->isPaused()) {
-			nextStyle();
+		if(styleAuto && !updateFrame) {
+			if(source.current == &source.camera) {
+				if(ofGetElapsedTimef() - styleAutoTimestamp > styleAutoTime) {
+					nextStyle(); // camera: change on timer
+					styleAutoTimestamp = ofGetElapsedTimef();
+				}
+			}
+			else if(wasLastFrame && !source.current->isPaused()) {
+				nextStyle(); // image(s) & video: change after last frame
+			}
 		}
 		if(source.current == &source.camera && (mirror.vert || mirror.horz)) {
 			ofPixels pixels(source.current->getPixels());
@@ -179,6 +188,9 @@ void ofApp::keyPressed(int key) {
 			break;
 		case 'a':
 			styleAuto = !styleAuto;
+			if(styleAuto) {
+				styleAutoTimestamp = ofGetElapsedTimef();
+			}
 			break;
 		case 'f':
 			ofToggleFullscreen();
@@ -293,6 +305,7 @@ void ofApp::setVideoSource() {
 	source.camera.close();
 	source.image.close();
 	wasLastFrame = false;
+	styleAutoTimestamp = ofGetElapsedTimef();
 }
 
 //--------------------------------------------------------------
@@ -302,6 +315,7 @@ void ofApp::setCameraSource() {
 	source.video.close();
 	source.image.close();
 	wasLastFrame = false;
+	styleAutoTimestamp = ofGetElapsedTimef();
 }
 
 //--------------------------------------------------------------
@@ -312,6 +326,7 @@ void ofApp::setImageSource() {
 	source.video.close();
 	source.camera.close();
 	wasLastFrame = false;
+	styleAutoTimestamp = ofGetElapsedTimef();
 }
 
 //--------------------------------------------------------------

@@ -76,6 +76,12 @@ class ofApp : public ofBaseApp {
 		bool styleAuto = false;  ///< change style automatically?
 		bool wasLastFrame = false; ///< was the prev source frame the last?
 
+		/// timestamp in s for last style change, only used for camera source
+		float styleAutoTimestamp = 0;
+
+		/// style change time in s, only used for camera source
+		float styleAutoTime = 20;
+
 		// input sources
 		struct {
 			Source *current = nullptr; ///< set this before using!
@@ -91,12 +97,12 @@ class ofApp : public ofBaseApp {
 		std::string videoPath = "movie.mp4";
 
 		// image input & output size expected by model
-		const static int imageWidth = 1280;
-		const static int imageHeight = 720;
+		//const static int imageWidth = 1280;
+		//const static int imageHeight = 720;
 		//const static int imageWidth = 1920;
 		//const static int imageHeight = 1080;
-		//const static int imageWidth = 640;
-		//const static int imageHeight = 360;
+		const static int imageWidth = 640;
+		const static int imageHeight = 480;
 		//const static int imageWidth = 3840;
 		//const static int imageHeight = 2160;
 

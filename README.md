@@ -83,7 +83,7 @@ Styler applies a given style image onto an input image. The input image can come
 
 Style images as jpg or png files are read from the `bin/data/style` directory. Input images as jpg or png files are read from the `bin/data/image` directory. When Styler is started, both directories are listed for image paths automatically. Simply add/remove images from each and restart the application.
 
-_Note: a minimum of 1 iamge must be in each directory, otherwise Styler will exit on start due to missing input._
+_Note: a minimum of 1 image must be in the style directory, otherwise Styler will exit on start due to missing input. If the input image directory is empty, the image source will be disabled._
 
 While running, any images drag & dropped onto the Styler window will be loaded as a new style.
 
