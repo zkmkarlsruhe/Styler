@@ -15,7 +15,14 @@
 /// \class ofxStyleTransfer
 /// \brief wrapper for the arbitrary style transfer model
 ///
-/// the model accepts a style image and applies the style to an input image
+/// the model accepts a style image and applies the style to an input image,
+/// the output image will be the same size as the input image
+///
+/// note: the model requires input input images to be sized in multiples of 32,
+///       images are resized between input/output as needed
+///
+/// note: input style images are required to 256x256, style images are resized
+///       as needed
 ///
 /// basic usage example:
 ///
@@ -72,8 +79,7 @@ class ofxStyleTransfer {
 
 			// input
 			inputVector = {cppflow::tensor(0), cppflow::tensor(0)};
-			size.width = width;
-			size.height = height;
+			setSize(width, height);
 
 			// output
 			outputImage.allocate(size.width, size.height, OF_IMAGE_COLOR);
@@ -91,7 +97,7 @@ class ofxStyleTransfer {
 		/// note: set the style image before calling this!
 		void setInput(const ofPixels & pixels) {
 			cppflow::tensor image = pixelsToFloatTensor(pixels);
-			if(pixels.getHeight() != size.width || pixels.getWidth() != size.height) {
+			if(pixels.getHeight() != modelSize.width || pixels.getWidth() != modelSize.height) {
 				image = cppflow::resize_bicubic(image, cppflow::tensor({size.height, size.width}), true);
 			}
 			inputVector[0] = image;
@@ -120,6 +126,20 @@ class ofxStyleTransfer {
 				}
 				if(model.isOutputNew()) {
 					auto output = model.getOutputs();
+					if(sizeChanged) {
+						// reallocate for new input size
+						outputImage.allocate(size.width, size.height, OF_IMAGE_COLOR);
+						sizeChanged = false;
+					}
+					if(size.width != outputImage.getWidth() ||
+					   size.height != outputImage.getHeight()) {
+						// change size in next output frame
+						sizeChanged = true;
+					}
+					if(modelSize.width != outputImage.getWidth() ||
+					   modelSize.height != outputImage.getHeight()) {
+						resizeTensorToImage(output[0], outputImage);
+					}
 					floatTensorToImage(output[0], outputImage);
 					outputImage.update();
 					return true;
@@ -129,6 +149,10 @@ class ofxStyleTransfer {
 				// blocking
 				if(newInput) {
 					auto output = model.runMultiModel(inputVector);
+					if(modelSize.width != outputImage.getWidth() ||
+					   modelSize.height != outputImage.getHeight()) {
+						resizeTensorToImage(output[0], outputImage);
+					}
 					floatTensorToImage(output[0], outputImage);
 					outputImage.update();
 					newInput = false;
@@ -140,19 +164,26 @@ class ofxStyleTransfer {
 		}
 
 		/// get processed output image
+		/// note: output size may differ from getWidth() / getHeight() if
+		///       setSize() called while model is processing in non-blocking
+		///       background thread
 		ofImage & getOutput() {
 			return outputImage;
 		}
 
 		/// draw current output image
-		void draw(float x, float y, float w=0, float h=0) {
-			if(w < 1) {w = size.width;}
-			if(h < 1) {h = size.height;}
+		void draw(float x, float y) {
+			outputImage.draw(x, y);
+		}
+
+		/// draw current output image
+		void draw(float x, float y, float w, float h) {
 			outputImage.draw(x, y, w, h);
 		}
 
 		/// start background thread processing
 		void startThread() {
+			sizeChanged = false; // reset change detection
 			model.startThread();
 		}
 
@@ -164,11 +195,39 @@ class ofxStyleTransfer {
 		/// returns true if background thread is running
 		bool isThreadRunning() {return model.isThreadRunning();}
 
-		/// returns input & output width
+		/// returns input width
+		/// note: output width may differ if setSize() called while model is
+		///       processing in non-blocking background thread, in which case
+		///       check the outputImage size
 		int getWidth() {return size.width;}
 
-		/// returns input & output height
+		/// returns input height
+		/// note: output height may differ if setSize() called while model is
+		///       processing in non-blocking background thread, in which case
+		///       check the outputImage size
 		int getHeight() {return size.height;}
+
+		/// set new input size
+		void setSize(int width, int height) {
+			size.width = width;
+			size.height = height;
+			modelSize.width = ofxStyleTransfer::roundupto(width, 32);
+			modelSize.height = ofxStyleTransfer::roundupto(height, 32);
+			if(modelSize.width != width || modelSize.height != height) {
+				ofLogWarning("ofxStyleTransfer") << width << "x" << height
+					<< " not multiple(s) of 32, rounding up to "
+					<< modelSize.width << "x" << modelSize.height;
+			}
+			if(model.isThreadRunning() && model.readyForInput()) {
+				// resize output image if not processing in background thread
+				sizeChanged = true;
+			}
+		}
+
+		// round n up to nearest multiple, positive only
+		static int roundupto(int n, int multiple) {
+			return n + multiple - 1 - (n + multiple - 1) % multiple;
+		}
 
 	protected:
 		ofxTF2::ThreadedModel model;
@@ -189,12 +248,25 @@ class ofxStyleTransfer {
 			ofxTF2::tensorToImage(tensor, image);
 		}
 
+		// resize tensor to match ofImage
+		void resizeTensorToImage(cppflow::tensor & tensor, ofImage & image) {
+			tensor = cppflow::resize_bicubic(tensor,
+				cppflow::tensor({(int)outputImage.getHeight(),
+							     (int)outputImage.getWidth()}), true);
+		}
+
 	private:
+
 		struct Size {
 			int width = 1;
 			int height = 1;
-		} size; ///< pixel input & output size
+		};
+		struct Size size; ///< pixel input (& output) size
+		struct Size modelSize; ///< pixel size for the model, multiples of 32
 		std::vector<cppflow::tensor> inputVector; // {input image, style image}
 		ofImage outputImage; ///< output image
 		bool newInput = false; ///< is the input tensor new?
+
+		/// size change between input & output? used when non-blocking only
+		bool sizeChanged = false;
 };

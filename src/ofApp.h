@@ -22,7 +22,7 @@
 #include "Scaler.h"
 
 /// advanced aribtrary style transfer which can dynamically change between input
-/// sources: static images, video file, camera
+/// sources: static images, video files, camera
 class ofApp : public ofBaseApp {
 
 	public:
@@ -64,6 +64,12 @@ class ofApp : public ofBaseApp {
 		/// switch to image source
 		void setImageSource();
 
+		/// update scaler for model output image
+		void updateScalerModel();
+
+		/// update scaler for current source
+		void updateScalerSource();
+
 		/// helper to get jpg & png paths in a given directory
 		std::vector<std::string> listImagePaths(std::string dirPath);
 
@@ -99,15 +105,17 @@ class ofApp : public ofBaseApp {
 		std::vector<std::string> imagePaths;
 		std::vector<std::string> videoPaths;
 
-		// image input & output size
-		//const static int imageWidth = 1280;
-		//const static int imageHeight = 720;
-		//const static int imageWidth = 1920;
-		//const static int imageHeight = 1080;
-		const static int imageWidth = 640;
-		const static int imageHeight = 480;
-		//const static int imageWidth = 3840;
-		//const static int imageHeight = 2160;
+		// input / ouput sizes
+		struct Size {
+			int width = 1;
+			int height = 1;
+		};
+		struct Size size; ///< input & output size
+		constexpr static struct Size cameraSize = {
+			.width = 640,
+			.height = 480
+		}; ///< desired camera size
+		bool dynamicSize = true; ///< change size to match source?
 
 		std::vector<std::string> stylePaths; ///< paths to available style images
 		std::size_t styleIndex = 0; ///< current style path index

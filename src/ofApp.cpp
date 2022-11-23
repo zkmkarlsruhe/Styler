@@ -22,18 +22,12 @@ void ofApp::setup() {
 	ofSetWindowTitle("Styler");
 	ofBackground(0);
 
-	// laod model
-	if(!styleTransfer.setup(imageWidth, imageHeight)) {
-		std::exit(EXIT_FAILURE);
-	}
-
 	// find style image paths
 	stylePaths = listImagePaths("style");
 	if(stylePaths.empty()) {
 		ofLogError("no style images found in bin/data/style");
 		std::exit(EXIT_FAILURE);
 	}
-	setStyle(stylePaths[styleIndex]);
 
 	// find input image paths
 	imagePaths = listImagePaths("image");
@@ -50,13 +44,21 @@ void ofApp::setup() {
 	// input source
 	setCameraSource();
 	source.image.player.setFrameTime(3000);
+	source.video.player.setVolume(0);
+	size.width = source.current->getWidth();
+	size.height = source.current->getHeight();
 
 	// output image
-	scaler.width = imageWidth;
-	scaler.height = imageHeight;
-	ofSetWindowShape(imageWidth, imageHeight);
+	scaler.width = size.width;
+	scaler.height = size.height;
+	ofSetWindowShape(size.width, size.height);
 	ofToggleFullscreen();
 
+	// load model
+	if(!styleTransfer.setup(size.width, size.height)) {
+		std::exit(EXIT_FAILURE);
+	}
+	setStyle(stylePaths[styleIndex]);
 	styleTransfer.startThread();
 }
 
@@ -64,6 +66,21 @@ void ofApp::setup() {
 void ofApp::update() {
 	source.current->update();
 	if(source.current->isFrameNew() || updateFrame) {
+
+		// update to new source size?
+		if(dynamicSize &&
+		   (size.width != source.current->getWidth() ||
+		    size.height != source.current->getHeight())) {
+			size.width = source.current->getWidth();
+			size.height = source.current->getHeight();
+			styleTransfer.setSize(size.width, size.height);
+			if(styleInput) {
+				updateScalerSource();
+			}
+			ofLog() << "new size " << size.width << " " << size.height;
+		}
+
+		// auto style transfer?
 		if(styleAuto && !updateFrame) {
 			if(source.current == &source.camera) {
 				if(ofGetElapsedTimef() - styleAutoTimestamp > styleAutoTime) {
@@ -75,6 +92,8 @@ void ofApp::update() {
 				nextStyle(); // image(s) & video: change after last frame
 			}
 		}
+
+		// input frame
 		if(source.current == &source.camera && (mirror.vert || mirror.horz)) {
 			ofPixels pixels(source.current->getPixels());
 			pixels.mirror(mirror.vert, mirror.horz);
@@ -86,7 +105,12 @@ void ofApp::update() {
 		updateFrame = false;
 		wasLastFrame = source.current->isLastFrame();
 	}
-	styleTransfer.update();
+	if(styleTransfer.update()) {
+		if(scaler.width != styleTransfer.getOutput().getWidth() ||
+		   scaler.height != styleTransfer.getOutput().getHeight()) {
+			updateScalerModel(); // output size changed
+		}
+	}
 }
 
 //--------------------------------------------------------------
@@ -95,7 +119,7 @@ void ofApp::draw() {
 	ofPushMatrix();
 		scaler.apply();
 		if(styleInput) {
-			source.current->draw(0, 0);
+			source.current->draw(0, 0, scaler.width, scaler.height);
 		}
 		else {
 			styleTransfer.draw(0, 0);
@@ -205,6 +229,12 @@ void ofApp::keyPressed(int key) {
 			break;
 		case 'k':
 			styleInput = !styleInput;
+			if(styleInput) {
+				updateScalerSource();
+			}
+			else {
+				updateScalerModel();
+			}
 			break;
 		case 'a':
 			styleAuto = !styleAuto;
@@ -319,7 +349,6 @@ void ofApp::takeStyle() {
 //--------------------------------------------------------------
 void ofApp::setVideoSource() {
 	if(!source.video.open(videoPaths)) {return;}
-	source.video.player.setVolume(0);
 	source.video.play();
 	source.current = &source.video;
 	source.camera.close();
@@ -330,7 +359,7 @@ void ofApp::setVideoSource() {
 
 //--------------------------------------------------------------
 void ofApp::setCameraSource() {
-	source.camera.setup(imageWidth, imageHeight);
+	source.camera.setup(cameraSize.width, cameraSize.height);
 	source.current = &source.camera;
 	source.video.close();
 	source.image.close();
@@ -347,6 +376,22 @@ void ofApp::setImageSource() {
 	source.camera.close();
 	wasLastFrame = false;
 	styleAutoTimestamp = ofGetElapsedTimef();
+}
+
+//--------------------------------------------------------------
+void ofApp::updateScalerModel() {
+	scaler.width = styleTransfer.getOutput().getWidth();
+	scaler.height = styleTransfer.getOutput().getHeight();
+	scaler.update();
+}
+
+//--------------------------------------------------------------
+void ofApp::updateScalerSource() {
+	if(dynamicSize) {
+		scaler.width = size.width;
+		scaler.height = size.height;
+	}
+	scaler.update();
 }
 
 //--------------------------------------------------------------
