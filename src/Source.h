@@ -14,6 +14,7 @@
 #pragma once
 
 #include "ImagePlayer.h"
+#include "VideoPlayer.h"
 
 /// base input frame source class
 class Source {
@@ -62,9 +63,9 @@ class ImageSource : public Source {
 /// video player source
 class PlayerSource : public Source {
 	public:
-		ofVideoPlayer player;
-		bool open(const std::string & path) {
-			return player.load(path);
+		VideoPlayer player;
+		bool open(const std::vector<std::string> & paths) {
+			return player.load(paths);
 		}
 		void close() {player.close();}
 		void update() {player.update();}
@@ -78,7 +79,7 @@ class PlayerSource : public Source {
 		bool isPaused() {return player.isPaused();}
 		void nextFrame() {player.nextFrame();}
 		void previousFrame() {player.previousFrame();}
-		bool isLastFrame() {return player.getCurrentFrame() == player.getTotalNumFrames();}
+		bool isLastFrame() {return player.isLastFrame();}
 		void play() {player.play();}
 		void stop() {player.stop();}
 };

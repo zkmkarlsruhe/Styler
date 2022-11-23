@@ -42,12 +42,9 @@ void ofApp::setup() {
 	}
 
 	// find input video paths
-	auto videoPaths = listVideoPaths("video");
+	videoPaths = listVideoPaths("video");
 	if(videoPaths.empty()) {
 		ofLogWarning("no videos found in bin/data/video");
-	}
-	else {
-		videoPath = videoPaths[0];
 	}
 
 	// input source
@@ -130,8 +127,8 @@ void ofApp::draw() {
 		        "right: next style\n"
 		        "left: prev style\n"
 		        "space: toggle playback / take style image\n"
-		        "up: next frame\n"
-		        "down: prev frame\n"
+		        "up: next frame / (shift) next video\n"
+		        "down: prev frame / (shift) prev video\n"
 				"drag&drop style image";
 		ofDrawBitmapStringHighlight(text, 4, 12);
 
@@ -161,13 +158,27 @@ void ofApp::keyPressed(int key) {
 			}
 			break;
 		case OF_KEY_UP:
-			if(source.current->isPaused()) {
-				source.current->nextFrame();
+			if(ofGetKeyPressed(OF_KEY_SHIFT)) {
+				if(source.current == &source.video) {
+					source.video.player.nextVideo();
+				}
+			}
+			else {
+				if(source.current->isPaused()) {
+					source.current->nextFrame();
+				}
 			}
 			break;
 		case OF_KEY_DOWN:
-			if(source.current->isPaused()) {
-				source.current->previousFrame();
+			if(ofGetKeyPressed(OF_KEY_SHIFT)) {
+				if(source.current == &source.video) {
+					source.video.player.previousVideo();
+				}
+			}
+			else {
+				if(source.current->isPaused()) {
+					source.current->previousFrame();
+				}
 			}
 			break;
 		case 'v': setVideoSource(); break;
@@ -307,7 +318,7 @@ void ofApp::takeStyle() {
 
 //--------------------------------------------------------------
 void ofApp::setVideoSource() {
-	if(!source.video.open(videoPath)) {return;}
+	if(!source.video.open(videoPaths)) {return;}
 	source.video.player.setVolume(0);
 	source.video.play();
 	source.current = &source.video;

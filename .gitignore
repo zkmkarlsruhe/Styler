@@ -5,7 +5,9 @@
 openFrameworks-Info.plist
 bin/data/model*
 bin/data/output
-bin/data/*.mp4
+bin/data/video/*.mp4
+bin/data/video/*.mov
+bin/data/video/*.avi
 bin/data/style
 config.make
 

@@ -97,7 +97,7 @@ class ofApp : public ofBaseApp {
 			bool horz = false;
 		} mirror;
 		std::vector<std::string> imagePaths;
-		std::string videoPath = "";
+		std::vector<std::string> videoPaths;
 
 		// image input & output size
 		//const static int imageWidth = 1280;

@@ -88,7 +88,7 @@ Styler starts in fullscreen and uses the camera source by default.
 Styler lists image and video paths automatically on start from the following directories:
 * `bin/data/style`: style images, jpg or png (required)
 * `bin/data/image`: input images, jpg or png, all paths added to playlist
-* `bin/data/video`: input video files, mov or mp4 or avi, first path used only
+* `bin/data/video`: input video files, mov or mp4 or avi, all paths added to playlist
 
 Simply add/remove files from each and restart the application. Order is sorted by filename.
 
@@ -111,14 +111,14 @@ While running, any images drag & dropped onto the Styler window will be loaded a
 * `LEFT`: previous style
 * `RIGHT`: next style
 * `SPACE`: toggle playback / take style image
-* `UP`: next frame, when paused
-* `DOWN`: previous frame, when paused
+* `UP`: next frame, when paused / (shift) next video
+* `DOWN`: previous frame, when paused / (shift) prev video
 
 ### Automatic Style Change
 
 When enabled, automatic style change will go to the next style based on the input source:
 * camera: every 20 seconds
-* image: when changing from the last iamge to the first image
+* image: when changing from the last image to the first image
 * video: when changing from the last frame to the first frame
 
 The Intelligent Museum
