@@ -83,8 +83,8 @@ class ofxStyleTransfer {
 
 			// output
 			outputImage.allocate(size.width, size.height, OF_IMAGE_COLOR);
+			//outputImage.getPixels().set(0);
 			//outputImage.getTexture().setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
-
 			return true;
 		}
 
@@ -213,11 +213,11 @@ class ofxStyleTransfer {
 			size.height = height;
 			modelSize.width = ofxStyleTransfer::roundupto(width, 32);
 			modelSize.height = ofxStyleTransfer::roundupto(height, 32);
-			if(modelSize.width != width || modelSize.height != height) {
-				ofLogWarning("ofxStyleTransfer") << width << "x" << height
-					<< " not multiple(s) of 32, rounding up to "
-					<< modelSize.width << "x" << modelSize.height;
-			}
+//			if(modelSize.width != width || modelSize.height != height) {
+//				ofLogWarning("ofxStyleTransfer") << width << "x" << height
+//					<< " not multiple(s) of 32, rounding up to "
+//					<< modelSize.width << "x" << modelSize.height;
+//			}
 			if(model.isThreadRunning() && model.readyForInput()) {
 				// resize output image if not processing in background thread
 				sizeChanged = true;

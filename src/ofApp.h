@@ -20,12 +20,15 @@
 #include "ofxStyleTransfer.h"
 #include "Source.h"
 #include "Scaler.h"
+#include "config.h"
 
-/// advanced aribtrary style transfer which can dynamically change between input
+/// advanced arbitrary style transfer which can dynamically change between input
 /// sources: static images, video files, camera
 class ofApp : public ofBaseApp {
 
 	public:
+		ofApp();
+
 		void setup();
 		void update();
 		void draw();
@@ -70,6 +73,9 @@ class ofApp : public ofBaseApp {
 		/// update scaler for current source
 		void updateScalerSource();
 
+		// config settings
+		CameraSourceSettings cameraSettings;
+
 		/// helper to get jpg & png paths in a given directory
 		std::vector<std::string> listImagePaths(std::string dirPath);
 
@@ -98,24 +104,16 @@ class ofApp : public ofBaseApp {
 			CameraSource camera;
 			ImageSource image;
 		} source;
-		struct {
-			bool vert = false;
-			bool horz = false;
-		} mirror;
 		std::vector<std::string> imagePaths;
 		std::vector<std::string> videoPaths;
 
-		// input / ouput sizes
-		struct Size {
+		// input / output sizes
+		struct {
 			int width = 1;
 			int height = 1;
-		};
-		struct Size size; ///< input & output size
-		constexpr static struct Size cameraSize = {
-			.width = 640,
-			.height = 480
-		}; ///< desired camera size
-		bool dynamicSize = true; ///< change size to match source?
+		} size; ///< current input & output size
+		bool staticSize = true; ///< keep fixed size, do not change based on input?
+		bool startFullscreen = false; ///< start in fullscreen?
 
 		std::vector<std::string> stylePaths; ///< paths to available style images
 		std::size_t styleIndex = 0; ///< current style path index

@@ -118,7 +118,6 @@ class ImagePlayer {
 				return;
 			}
 			frameSet = true; // signal new frame in update()
-			ofLog() << "image: " << path;
 		}
 
 	    std::vector<std::string> paths; ///< image file paths, min 1 required

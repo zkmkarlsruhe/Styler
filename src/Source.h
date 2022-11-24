@@ -82,6 +82,17 @@ class PlayerSource : public Source {
 		bool isLastFrame() {return player.isLastFrame();}
 		void play() {player.play();}
 		void stop() {player.stop();}
+		void setVolume(float v) {player.setVolume(v);}
+};
+
+/// camera input source settings
+struct CameraSourceSettings {
+	int device = 0; ///< desired input device id
+	int rate = 30; ///< desired input framerate
+	struct {
+		int width = 640;
+		int height = 480;
+	} size; ///< desired input size
 };
 
 /// camera input source
@@ -90,6 +101,15 @@ class CameraSource : public Source {
 		// ofVideograbber doesn't seem to like setup()/close() cycles,
 		// so dynamically create an instance each time
 		ofVideoGrabber *grabber = nullptr;
+		struct {
+			bool vert = false;
+			bool horz = false;
+		} mirror;
+		ofPixels pixels; ///< mirrored pixels buffer
+		bool setup(const CameraSourceSettings & settings) {
+			return setup(settings.size.width, settings.size.height,
+			             settings.rate, settings.device);
+		}
 		bool setup(int w, int h, int fps=30, int deviceID=0) {
 			close();
 			grabber = new ofVideoGrabber();
@@ -106,9 +126,21 @@ class CameraSource : public Source {
 		}
 		void update() {grabber->update();}
 		void draw(float x, float y) {grabber->draw(x, y);}
-		void draw(float x, float y, float w, float h) {grabber->draw(x, y, w, h);}
+		void draw(float x, float y, float w, float h) {
+			grabber->draw(x, y, w, h);
+		}
 		bool isFrameNew() {return grabber->isFrameNew();}
-		const ofPixels & getPixels() {return grabber->getPixels();}
+		const ofPixels & getPixels() {
+			if(mirror.vert || mirror.horz) {
+				pixels = grabber->getPixels();
+				pixels.mirror(mirror.vert, mirror.horz);
+				return pixels;
+			}
+			if(pixels.isAllocated()) {
+				pixels.clear();
+			}
+			return grabber->getPixels();
+		}
 		int getWidth() {return grabber->getWidth();}
 		int getHeight() {return grabber->getHeight();}
 };

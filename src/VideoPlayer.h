@@ -112,11 +112,12 @@ class VideoPlayer {
 	protected:
 
 		void setVideo(std::string & path) {
+			bool wasPlaying = player.isPlaying();
 			if(!player.load(path)) {
 				return;
 			}
+			if(wasPlaying) {player.play();}
 			newVideo = true;
-			ofLog() << "video: " << path;
 		}
 
 		std::vector<std::string> paths; ///< image file paths, min 1 required

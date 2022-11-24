@@ -16,6 +16,9 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
+ofApp::ofApp() : scaler(1, 1) {}
+
+//--------------------------------------------------------------
 void ofApp::setup() {
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
@@ -25,26 +28,26 @@ void ofApp::setup() {
 	// find style image paths
 	stylePaths = listImagePaths("style");
 	if(stylePaths.empty()) {
-		ofLogError("no style images found in bin/data/style");
+		ofLogError(PACKAGE) << "no style images found in bin/data/style";
+		ofSystemAlertDialog("No style images found in bin/data/style");
 		std::exit(EXIT_FAILURE);
 	}
 
 	// find input image paths
 	imagePaths = listImagePaths("image");
 	if(imagePaths.empty()) {
-		ofLogWarning("no images found in bin/data/image");
+		ofLogWarning(PACKAGE) << "no images found in bin/data/image";
 	}
 
 	// find input video paths
 	videoPaths = listVideoPaths("video");
 	if(videoPaths.empty()) {
-		ofLogWarning("no videos found in bin/data/video");
+		ofLogWarning(PACKAGE) << "no videos found in bin/data/video";
 	}
 
 	// input source
 	setCameraSource();
 	source.image.player.setFrameTime(3000);
-	source.video.player.setVolume(0);
 	size.width = source.current->getWidth();
 	size.height = source.current->getHeight();
 
@@ -52,7 +55,9 @@ void ofApp::setup() {
 	scaler.width = size.width;
 	scaler.height = size.height;
 	ofSetWindowShape(size.width, size.height);
-	ofToggleFullscreen();
+	if(startFullscreen) {
+		ofToggleFullscreen();
+	}
 
 	// load model
 	if(!styleTransfer.setup(size.width, size.height)) {
@@ -60,6 +65,18 @@ void ofApp::setup() {
 	}
 	setStyle(stylePaths[styleIndex]);
 	styleTransfer.startThread();
+
+	// summary
+	ofLogVerbose(PACKAGE) << "size: " << size.width << "x" << size.height;
+	ofLogVerbose(PACKAGE) << "static size: " << (staticSize ? "true" : "false");
+	ofLogVerbose(PACKAGE) << "style auto: " << (styleAuto ? "true" : "false");
+	ofLogVerbose(PACKAGE) << "style auto time (camera): " << styleAutoTime;
+	ofLogVerbose(PACKAGE) << stylePaths.size() << " styles:";
+	for(auto p : stylePaths) {ofLogVerbose(PACKAGE) << "" << p;}
+	ofLogVerbose(PACKAGE) << imagePaths.size() << " images:";
+	for(auto p : imagePaths) {ofLogVerbose(PACKAGE) << "" << p;}
+	ofLogVerbose(PACKAGE) << videoPaths.size() << " videos:";
+	for(auto p : videoPaths) {ofLogVerbose(PACKAGE) << "" << p;}
 }
 
 //--------------------------------------------------------------
@@ -68,7 +85,7 @@ void ofApp::update() {
 	if(source.current->isFrameNew() || updateFrame) {
 
 		// update to new source size?
-		if(dynamicSize &&
+		if(!staticSize &&
 		   (size.width != source.current->getWidth() ||
 		    size.height != source.current->getHeight())) {
 			size.width = source.current->getWidth();
@@ -77,7 +94,7 @@ void ofApp::update() {
 			if(styleInput) {
 				updateScalerSource();
 			}
-			ofLog() << "new size " << size.width << " " << size.height;
+			ofLogVerbose(PACKAGE) << "size now " << size.width << " " << size.height;
 		}
 
 		// auto style transfer?
@@ -94,14 +111,7 @@ void ofApp::update() {
 		}
 
 		// input frame
-		if(source.current == &source.camera && (mirror.vert || mirror.horz)) {
-			ofPixels pixels(source.current->getPixels());
-			pixels.mirror(mirror.vert, mirror.horz);
-			styleTransfer.setInput(pixels);
-		}
-		else {
-			styleTransfer.setInput(source.current->getPixels());
-		}
+		styleTransfer.setInput(source.current->getPixels());
 		updateFrame = false;
 		wasLastFrame = source.current->isLastFrame();
 	}
@@ -209,10 +219,10 @@ void ofApp::keyPressed(int key) {
 		case 'c': setCameraSource(); break;
 		case 'i': setImageSource(); break;
 		case 'm':
-			mirror.horz = !mirror.horz;
+			source.camera.mirror.horz = !source.camera.mirror.horz;
 			break;
 		case 'n':
-			mirror.vert = !mirror.vert;
+			source.camera.mirror.vert = !source.camera.mirror.vert;
 			break;
 		case ' ':
 			if(!styleInput) {
@@ -245,11 +255,13 @@ void ofApp::keyPressed(int key) {
 		case 'f':
 			ofToggleFullscreen();
 			break;
-		case 's':
+		case 's': {
 			ofDirectory::createDirectory("output");
-			ofSaveImage(styleTransfer.getOutput().getPixels(),
-			            "output/"+ofGetTimestampString("%m-%d-%Y_%H-%M-%S")+".png");
+			std::string path = "output/"+ofGetTimestampString("%m-%d-%Y_%H-%M-%S")+".png";
+			ofSaveImage(styleTransfer.getOutput().getPixels(), path);
+			ofLogVerbose(PACKAGE) << "saved " << path;
 			break;
+		}
 		case 'd':
 			debug = !debug;
 			break;
@@ -337,7 +349,7 @@ void ofApp::setStyle(std::string & path) {
 	if(!style.load(path)) {
 		return;
 	}
-	ofLog() << "style: " << ofFilePath::getFileName(path);
+	ofLogVerbose(PACKAGE) << "style now " << ofFilePath::getFileName(path);
 	styleTransfer.setStyle(style.getPixels());
 }
 
@@ -350,21 +362,24 @@ void ofApp::takeStyle() {
 void ofApp::setVideoSource() {
 	if(!source.video.open(videoPaths)) {return;}
 	source.video.play();
+	source.video.setVolume(0);
 	source.current = &source.video;
 	source.camera.close();
 	source.image.close();
 	wasLastFrame = false;
 	styleAutoTimestamp = ofGetElapsedTimef();
+	ofLogVerbose(PACKAGE) << "video source";
 }
 
 //--------------------------------------------------------------
 void ofApp::setCameraSource() {
-	source.camera.setup(cameraSize.width, cameraSize.height);
+	source.camera.setup(cameraSettings);
 	source.current = &source.camera;
 	source.video.close();
 	source.image.close();
 	wasLastFrame = false;
 	styleAutoTimestamp = ofGetElapsedTimef();
+	ofLogVerbose(PACKAGE) << "camera source";
 }
 
 //--------------------------------------------------------------
@@ -376,6 +391,7 @@ void ofApp::setImageSource() {
 	source.camera.close();
 	wasLastFrame = false;
 	styleAutoTimestamp = ofGetElapsedTimef();
+	ofLogVerbose(PACKAGE) << "image source";
 }
 
 //--------------------------------------------------------------
@@ -387,7 +403,7 @@ void ofApp::updateScalerModel() {
 
 //--------------------------------------------------------------
 void ofApp::updateScalerSource() {
-	if(dynamicSize) {
+	if(!staticSize) {
 		scaler.width = size.width;
 		scaler.height = size.height;
 	}
