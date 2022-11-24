@@ -52,8 +52,7 @@ void ofApp::setup() {
 	size.height = source.current->getHeight();
 
 	// output image
-	scaler.width = size.width;
-	scaler.height = size.height;
+	scaler.setSize(size.width, size.height);
 	ofSetWindowShape(size.width, size.height);
 	if(startFullscreen) {
 		ofToggleFullscreen();
@@ -349,6 +348,10 @@ void ofApp::setStyle(std::string & path) {
 	if(!style.load(path)) {
 		return;
 	}
+	if(style.getImageType() != OF_IMAGE_COLOR) {
+		// model requires RGB without alpha, this is expensive
+		style.setImageType(OF_IMAGE_COLOR);
+	}
 	ofLogVerbose(PACKAGE) << "style now " << ofFilePath::getFileName(path);
 	styleTransfer.setStyle(style.getPixels());
 }
@@ -396,16 +399,15 @@ void ofApp::setImageSource() {
 
 //--------------------------------------------------------------
 void ofApp::updateScalerModel() {
-	scaler.width = styleTransfer.getOutput().getWidth();
-	scaler.height = styleTransfer.getOutput().getHeight();
+	scaler.setSize(styleTransfer.getOutput().getWidth(),
+				   styleTransfer.getOutput().getHeight());
 	scaler.update();
 }
 
 //--------------------------------------------------------------
 void ofApp::updateScalerSource() {
 	if(!staticSize) {
-		scaler.width = size.width;
-		scaler.height = size.height;
+		scaler.setSize(size.width, size.height);
 	}
 	scaler.update();
 }

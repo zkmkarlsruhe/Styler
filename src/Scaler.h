@@ -36,6 +36,12 @@ class Scaler {
 			height = h;
 		}
 
+		/// set render pixel size, call update after to put into effect
+		void setSize(int w, int h) {
+			width = w;
+			height = h;
+		}
+
 		/// update scaler to fit window
 		void update() {
 			update(ofGetWidth(), ofGetHeight());

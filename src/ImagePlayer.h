@@ -117,6 +117,10 @@ class ImagePlayer {
 			if(!image.load(path)) {
 				return;
 			}
+			if(image.getImageType() != OF_IMAGE_COLOR) {
+				// model requires RGB without alpha, this is expensive
+				image.setImageType(OF_IMAGE_COLOR);
+			}
 			frameSet = true; // signal new frame in update()
 		}
 

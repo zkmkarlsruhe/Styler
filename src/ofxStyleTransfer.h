@@ -19,10 +19,10 @@
 /// the output image will be the same size as the input image
 ///
 /// note: the model requires input input images to be sized in multiples of 32,
-///       images are resized between input/output as needed
+///       images are resized between input/output as needed, images must be RGB
 ///
 /// note: input style images are required to 256x256, style images are resized
-///       as needed
+///       as needed, style images must be RGB
 ///
 /// basic usage example:
 ///
@@ -83,8 +83,6 @@ class ofxStyleTransfer {
 
 			// output
 			outputImage.allocate(size.width, size.height, OF_IMAGE_COLOR);
-			//outputImage.getPixels().set(0);
-			//outputImage.getTexture().setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
 			return true;
 		}
 
@@ -94,6 +92,7 @@ class ofxStyleTransfer {
 		}
 
 		/// set input pixels to process, resizes as needed
+		/// image type must be RGB without alpha
 		/// note: set the style image before calling this!
 		void setInput(const ofPixels & pixels) {
 			cppflow::tensor image = pixelsToFloatTensor(pixels);
@@ -105,6 +104,7 @@ class ofxStyleTransfer {
 		}
 
 		/// set input style image, resizes as needed
+		/// image type must be RGB without alpha
 		void setStyle(const ofPixels & pixels) {
 			auto style = pixelsToFloatTensor(pixels);
 			if(pixels.getHeight() != STYLE_W || pixels.getWidth() != STYLE_H) {
@@ -213,11 +213,11 @@ class ofxStyleTransfer {
 			size.height = height;
 			modelSize.width = ofxStyleTransfer::roundupto(width, 32);
 			modelSize.height = ofxStyleTransfer::roundupto(height, 32);
-//			if(modelSize.width != width || modelSize.height != height) {
-//				ofLogWarning("ofxStyleTransfer") << width << "x" << height
-//					<< " not multiple(s) of 32, rounding up to "
-//					<< modelSize.width << "x" << modelSize.height;
-//			}
+			//if(modelSize.width != width || modelSize.height != height) {
+			//	ofLogWarning("ofxStyleTransfer") << width << "x" << height
+			//		<< " not multiple(s) of 32, rounding up to "
+			//		<< modelSize.width << "x" << modelSize.height;
+			//}
 			if(model.isThreadRunning() && model.readyForInput()) {
 				// resize output image if not processing in background thread
 				sizeChanged = true;
