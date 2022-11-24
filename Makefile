@@ -38,6 +38,9 @@ mac.dist.include = bin/data CHANGES.txt LICENSE.txt README.md
 # remove these from the release dist package (relative to the dist dir)
 mac.dist.exclude = data/icon.icns data/icon-debug.icns data/output
 
+# add link to /Applications in dmg
+mac.dmg.appslink = true
+
 # codesign identity, usually a Developer ID Application string
 # REPLACE this with your own or set it via the commandline:
 # make app dist-dmg mac.codesign.identity="Foo Bar Baz Developers"
