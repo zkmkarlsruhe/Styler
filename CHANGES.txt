@@ -1,0 +1,36 @@
+0.3.0: TBA
+
+* change model input images to RGB if wrong image type
+
+* added auto style change for camera source using timer
+* added dynamic input/output size handling
+* added commandline options
+* added auto style change control
+* added video source multiple path handling like image source
+* added configure and run scripts
+* added screenshot, changelog, and license
+
+* input images and video now optional
+* auto style change now checks last frame for both image and video sources
+* now list style and input image paths from directory automatically
+* video path now listed from bin/data/video dir
+* load style from source pixels directly
+* draw through source instead of intermediate image
+* moved camera mirroring into source implementation
+* how alert when no styles are found
+
+* don't start in fullscreen
+
+0.2.0: 2022 Nov 22
+
+* fixed build on Linux
+* fixed download script on linux
+
+* added style image capture mode
+
+* reactivated image playback
+* change style at end of image playback loop
+
+0.1.0: 2022 Nov 16
+
+initial version, original work summer 2022
