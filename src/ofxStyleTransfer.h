@@ -6,7 +6,6 @@
  * Originally from ofxTensorFlow2 example_style_transfer_arbitrary under a
  * BSD Simplified License: https://github.com/zkmkarlsruhe/ofxTensorFlow2
  */
-
 #pragma once
 
 #include "ofxTensorFlow2.h"

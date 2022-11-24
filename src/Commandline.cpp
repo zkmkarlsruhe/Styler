@@ -1,5 +1,5 @@
 /*
- * YoloOSC
+ * Styler
  *
  * Copyright (c) 2022 ZKM | Hertz-Lab
  * Dan Wilcox <dan.wilcox@zkm.de>
