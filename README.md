@@ -1,6 +1,8 @@
 Styler
 ======
 
+![Styler screenshot](media/screenshot.png)
+
 Arbitrary style transformation of an input image, video, or camera source.
 
 This code base has been developed by [ZKM | Hertz-Lab](https://zkm.de/en/about-the-zkm/organization/hertz-lab) as part of the project [»The Intelligent Museum«](#the-intelligent-museum). 
