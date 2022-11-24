@@ -30,15 +30,15 @@ VER=$(cat src/config.h | grep "VERSION" | awk '{ gsub(/"/, "", $3); print $3 }')
 BUILD=$(git rev-list --count HEAD)
 
 # xcconfig: custom icon path
-# echo "$CONFIG"
-# if grep -q "//Styler" $CONFIG ; then
-# 	# remove *all* lines after HEADER_SEARCH_PATHS
-# 	# note: if the oF project templates change, this probably needs updating
-# 	sed -i '' '/HEADER_SEARCH_PATHS/q' $CONFIG
-# fi
-# echo "" >> $CONFIG
-# echo "//Styler" >> $CONFIG
-# echo 'ICON_FILE_PATH = bin/data/' >> $CONFIG
+echo "$CONFIG"
+if grep -q "//Styler" $CONFIG ; then
+	# remove *all* lines after HEADER_SEARCH_PATHS
+	# note: if the oF project templates change, this probably needs updating
+	sed -i '' '/HEADER_SEARCH_PATHS/q' $CONFIG
+fi
+echo "" >> $CONFIG
+echo "//Styler" >> $CONFIG
+echo 'ICON_FILE_PATH = bin/data/' >> $CONFIG
 
 # plist: version, bundle ID, and other info
 echo "$PLIST"

@@ -7,7 +7,10 @@
 * added commandline options
 * added auto style change control
 * added video source multiple path handling like image source
+* added app icon & integration for macOS .app
+* added Makefile-mac-dist.mk to automate macOS test builds
 * added configure and run scripts
+
 * added screenshot, changelog, and license
 
 * input images and video now optional

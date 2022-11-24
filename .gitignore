@@ -1,15 +1,24 @@
 # TODO please fill me
 
-*.xcodeproj
-*.xcconfig
-openFrameworks-Info.plist
+config.make
 bin/data/model*
 bin/data/output
 bin/data/video/*.mp4
 bin/data/video/*.mov
 bin/data/video/*.avi
 bin/data/style
-config.make
+
+# Makefile-mac-dist.mk
+build
+*.dmg
+
+# media
+media/icon/*.icns
+
+# Xcode
+*.xcodeproj
+*.xcconfig
+openFrameworks-Info.plist
 
 # Python
 __pycache__

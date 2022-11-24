@@ -221,6 +221,58 @@ Another option is to use a wrapper script, such as the `styler.sh` script includ
 
 _Note: The `styler.sh` script uses the release build "Styler" .app naming. If you are testing with the debug build, edit the `APP` variable name to "StylerDebug"._
 
+Develop
+-------
+
+### Release steps
+
+1. Update changelog
+2. Update app version in src/config.h define and openFrameworks-Info.plist
+3. Tag version commit, ala "0.3.0"
+4. Push commit and tags to server:
+```shell
+git commit push
+git commit push --tags
+```
+
+### macOS build distribution
+
+1. Set Signing & Capabilities Team
+2. Enable Hardened Runtime
+3. Notarize app
+4. Bundle app and data into Styler-version distribution folder
+5. Compress distribution folder into Styler-version.dmg disk image
+6. Sign disk image
+
+Once steps 1-2 are done, the remaining steps are automated via `Makefile-mac-dist.mk` using the `scripts/release_dmg.sh` wrapper script:
+```shell
+./scripts/release_dmg.sh
+```
+
+Known Issues
+------------
+
+### Xcode Legacy Build System error
+
+If the build fails in Xcode 12 or 13 with a "The Legacy Build System will be removed in a future release." error, disable this warning via:
+1. Open File->Project Settings
+2. Check "Do not show a diagnostic issue about build system deprecation"
+3. Click "Done"
+
+_This is likely to be fixed via OF version 0.12._
+
+### Xcode Release build errors due to missing _TF_ functions
+
+When building for Debug, only the architecture of the system is built. When building for Release, multiple architectures will be targeted (Intel and Arm), however since libtensorflow builds are currently single arch only, the Release build will fail to link due to missing architectures.
+
+The quick fix is to disable building for the non-system architecture, for example on an M1 system (arm64) we disable building for Intel (x86_64) and vice-versa in the Xcode project:
+
+1. Click on the project in the top left of the project tree
+2. Click on the project Target, then the Build Settings tab, make sure "All" is selected
+3. Double-click on Excluded Architectures, and enter the non-system arch, ie. "x86_64" for an M1 "arm64" system, etc.
+
+Now a Release rebuild should hopefully finish.
+
 The Intelligent Museum
 ----------------------
 
