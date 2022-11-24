@@ -33,7 +33,7 @@ mac.app.project.scheme = Styler Release
 mac.dist.version := $(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" openFrameworks-Info.plist)
 
 # include these in the release dist package (relative to this dir)
-mac.dist.include = bin/data doc CHANGES.txt LICENSE.txt README.md
+mac.dist.include = bin/data CHANGES.txt LICENSE.txt README.md
 
 # remove these from the release dist package (relative to the dist dir)
 mac.dist.exclude = data/icon.icns data/icon-debug.icns
@@ -51,7 +51,7 @@ postdistdir::
 	cd $(mac.dist.subdir) && mv README.md README.txt
 
 # override zip and dmg naming to include platform and arch
-mac.dmg.name=$(mac.dist.name.version)-macos-$(uname -a)
-mac.zip.name=$(mac.dist.name.version)-macos-$(uname -a)
+mac.dmg.name = $(mac.dist.name.version)-macos-$(shell uname -m)
+mac.zip.name = $(mac.dist.name.version)-macos-$(shell uname -m)
 
 endif # osx
