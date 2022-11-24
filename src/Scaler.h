@@ -77,13 +77,13 @@ class Scaler {
 			return (my - y) / scaleY;
 		}
 
-		int width = 1;           //< render width in pixels
-		int height = 1;          //< render height in pixels
-		float x = 0;             //< upper left corner coordinate
-		float y = 0;             //< upper left cormer coordinate
-		float scaleX = 1.0;      //< horz scale between window & render width
-		float scaleY = 1.0;      //< vert scale between window & render height
-		bool aspect = true;      //< keep aspect ratio when scaling?
-		bool mirrorHorz = false; //< mirror horz?
-		bool mirrorVert = false; //< mirror vert?
+		int width = 1;           ///< render width in pixels
+		int height = 1;          ///< render height in pixels
+		float x = 0;             ///< upper left corner coordinate
+		float y = 0;             ///< upper left cormer coordinate
+		float scaleX = 1.0;      ///< horz scale between window & render width
+		float scaleY = 1.0;      ///< vert scale between window & render height
+		bool aspect = true;      ///< keep aspect ratio when scaling?
+		bool mirrorHorz = false; ///< mirror horz?
+		bool mirrorVert = false; ///< mirror vert?
 };

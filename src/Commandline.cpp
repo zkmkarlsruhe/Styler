@@ -75,7 +75,7 @@ bool Commandline::parse(int argc, char **argv) {
 
 	// check style auto change time
 	if(app->styleAutoTime <= 0) {
-		ofLogWarning(PACKAGE) << "ignoring invalid auto change time: " << app->styleAutoTime;
+		ofLogWarning(PACKAGE) << "ignoring invalid auto style change time: " << app->styleAutoTime;
 		app->styleAutoTime = 20;
 	}
 
