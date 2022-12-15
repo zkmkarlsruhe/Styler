@@ -119,7 +119,7 @@ Usage
 
 Styler applies a given style image onto an input image. The input image can come from one of three input sources: static image(s), video frames, or camera frames.
 
-Styler starts in fullscreen and uses the camera source by default.
+Styler starts in windowed-mode and uses the camera source by default.
 
 ### Input
 
@@ -136,6 +136,7 @@ While running, any images drag & dropped onto the Styler window will be loaded a
 
 ### Key Commands
 
+* `d`: toggle debug mode, shows on-screen help
 * `v`: video input
 * `c`: camera input
 * `i`: image input
@@ -151,6 +152,14 @@ While running, any images drag & dropped onto the Styler window will be loaded a
 * `SPACE`: toggle playback / take style image
 * `UP`: next frame, when paused / (shift) next video
 * `DOWN`: previous frame, when paused / (shift) prev video
+
+Example: inputting style from camera
+1. Press `c` to choose camera input
+2. Press `k` to enter input mode, camera feed will no longer be styled
+3. Present object or image to camera, try to cover most of the camera's view
+4. Press `SPACE` to take snapshot as style image
+5. Press `k` to return to style mode
+6. (Optional) Press `s` to save current styled output image
 
 ### Automatic Style Change
 
