@@ -22,6 +22,8 @@
  */
 #include "Commandline.h"
 
+static void setCameraSize(CameraSourceSettings &settings, std::string & size);
+
 Commandline::Commandline(ofApp *app) : app(app) {
 	parser.description(DESCRIPTION);
 	parser.get_formatter()->label("Positionals", "Arguments");
@@ -31,10 +33,14 @@ bool Commandline::parse(int argc, char **argv) {
 
 	// local options, the rest are ofAppSettings instance variables
 	std::string size = "";
+	std::string styleSize = "";
 	bool list = false;
 	bool verbose = false;
 	bool version = false;
 	std::string settings = "";
+
+	// no style camera by default
+	app->styleCameraSettings.device = -1;
 
 	parser.add_flag("-f,--fullscreen", app->startFullscreen, "start in fullscreen");
 	parser.add_flag("-a,--auto", app->styleAuto, "enable auto style change");
@@ -42,10 +48,15 @@ bool Commandline::parse(int argc, char **argv) {
 	parser.add_flag(  "-l,--list", list, "list camera devices and exit");
 	parser.add_option("-d,--dev", app->cameraSettings.device, "camera device number, default " + ofToString(app->cameraSettings.device));
 	parser.add_option("-r,--rate", app->cameraSettings.rate, "desired camera framerate, default " + ofToString(app->cameraSettings.rate));
-	parser.add_option("-s,--size", size, "desired camera size, default " + ofToString(app->cameraSettings.size.width) + "x" + ofToString(app->cameraSettings.size.height));
+	parser.add_option("-s,--size", size, "desired camera size, default " +
+		ofToString(app->cameraSettings.size.width) + "x" + ofToString(app->cameraSettings.size.height));
 	parser.add_flag("--mirror", app->source.camera.mirror.horz, "mirror camera horizontally");
 	parser.add_flag("--flip", app->source.camera.mirror.vert, "flip camera vertically");
 	parser.add_flag("--static-size", app->staticSize, "disable dynamic input -> output size handling");
+	parser.add_option("--style-dev", app->styleCameraSettings.device, "optional second style camera device number");
+	parser.add_option("--style-rate", app->cameraSettings.rate, "desired style camera framerate, default " + ofToString(app->styleCameraSettings.rate));
+	parser.add_option("--style-size", styleSize, "desired style camera size, default " +
+		ofToString(app->styleCameraSettings.size.width) + "x" + ofToString(app->styleCameraSettings.size.height));
 	parser.add_flag("-v,--verbose", verbose, "verbose printing");
 	parser.add_flag("--version", version, "print version and exit");
 
@@ -81,24 +92,10 @@ bool Commandline::parse(int argc, char **argv) {
 
 	// size: WxH, ie. 640x480 or 1280X720
 	if(size != "") {
-		std::size_t found = size.find_last_of("x");
-		if(found == std::string::npos) {
-			found = size.find_last_of("X"); // try uppercase too
-		}
-		if(found != std::string::npos) {
-			int w = ofToInt(size.substr(0, found));
-			int h = ofToInt(size.substr(found+1));
-			if(w == 0 || h == 0) {
-				ofLogWarning(PACKAGE) << "ignoring invalid size: " << size;
-			}
-			else {
-				app->cameraSettings.size.width = w;
-				app->cameraSettings.size.height = h;
-			}
-		}
-		else {
-			ofLogWarning(PACKAGE) << "ignoring invalid size: " << size;
-		}
+		setCameraSize(app->cameraSettings, size);
+	}
+	if(styleSize != "") {
+		setCameraSize(app->styleCameraSettings, styleSize);
 	}
 	app->size.width = app->cameraSettings.size.width;
 	app->size.height = app->cameraSettings.size.height;
@@ -108,4 +105,25 @@ bool Commandline::parse(int argc, char **argv) {
 
 int Commandline::exit() {
 	return parser.exit(error);
+}
+
+static void setCameraSize(CameraSourceSettings &settings, std::string & size) {
+	std::size_t found = size.find_last_of("x");
+	if(found == std::string::npos) {
+		found = size.find_last_of("X"); // try uppercase too
+	}
+	if(found != std::string::npos) {
+		int w = ofToInt(size.substr(0, found));
+		int h = ofToInt(size.substr(found+1));
+		if(w == 0 || h == 0) {
+			ofLogWarning(PACKAGE) << "ignoring invalid size: " << size;
+		}
+		else {
+			settings.size.width = w;
+			settings.size.height = h;
+		}
+	}
+	else {
+		ofLogWarning(PACKAGE) << "ignoring invalid size: " << size;
+	}
 }

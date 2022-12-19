@@ -73,8 +73,12 @@ class ofApp : public ofBaseApp {
 		/// update scaler for current source
 		void updateScalerSource();
 
+		/// update style camera draw rectfrom win size
+		void updateStyleCameraRect();
+
 		// config settings
 		CameraSourceSettings cameraSettings;
+		CameraSourceSettings styleCameraSettings;
 
 		/// helper to get jpg & png paths in a given directory
 		std::vector<std::string> listImagePaths(std::string dirPath);
@@ -87,7 +91,6 @@ class ofApp : public ofBaseApp {
 
 		bool debug = false; ///< show debug info?
 		bool updateFrame = false; ///< update current output?
-		bool styleInput = false; ///< style input mode?
 		bool styleAuto = false;  ///< change style automatically?
 		bool wasLastFrame = false; ///< was the prev source frame the last?
 
@@ -106,6 +109,14 @@ class ofApp : public ofBaseApp {
 		} source;
 		std::vector<std::string> imagePaths;
 		std::vector<std::string> videoPaths;
+
+		// style source
+		struct {
+			Source *current = nullptr; ///< current style input
+			CameraSource *camera = nullptr; ///< optional second camera input
+		} styleSource;
+		bool styleCameraPip = true; ///< draw style camera PiP (Picture in Picture)?
+		ofRectangle styleCameraRect; ///< style camera draw rect
 
 		// input / output sizes
 		struct {

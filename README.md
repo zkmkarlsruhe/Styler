@@ -134,6 +134,10 @@ _Note: a minimum of 1 image must be in the style directory, otherwise Styler wil
 
 While running, any images drag & dropped onto the Styler window will be loaded as a new style.
 
+### Style Input Mode
+
+Styler can also accept new style images from the current input source or, optionally, a second live camera input. See The "Commandline Options" section for info on enabling the style camera.
+
 ### Key Commands
 
 * `d`: toggle debug mode, shows on-screen help
@@ -145,7 +149,7 @@ While running, any images drag & dropped onto the Styler window will be loaded a
 * `r`: restart video
 * `f`: toggle fullscreen
 * `s`: save output image to `bin/data/output` directory
-* `k`: toggle style input mode
+* `k`: toggle style input mode / toggle style camera pip
 * `a`: toggle auto style change after last frame
 * `LEFT`: previous style
 * `RIGHT`: next style
@@ -153,7 +157,7 @@ While running, any images drag & dropped onto the Styler window will be loaded a
 * `UP`: next frame, when paused / (shift) next video
 * `DOWN`: previous frame, when paused / (shift) prev video
 
-Example: inputting style from camera
+Example: inputting style from main camera
 1. Press `c` to choose camera input
 2. Press `k` to enter input mode, camera feed will no longer be styled
 3. Present object or image to camera, try to cover most of the camera's view
@@ -189,6 +193,9 @@ Options:
   --mirror                    mirror camera horizontally
   --flip                      flip camera vertically
   --static-size               disable dynamic input -> output size handling
+  --style-dev INT             optional second style camera device number
+  --style-rate INT            desired style camera framerate, default 30
+  --style-size TEXT           desired style camera size, default 640x480
   -v,--verbose                verbose printing
   --version                   print version and exit
 
