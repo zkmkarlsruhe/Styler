@@ -56,7 +56,6 @@ void ofApp::setup() {
 		styleSource.camera = new CameraSource;
 		if(styleSource.camera->setup(styleCameraSettings)) {
 			styleSource.current = styleSource.camera;
-			updateStyleCameraRect();
 			ofLogVerbose(PACKAGE) << "style camera source: "
 				<< styleCameraSettings.device;
 		}
@@ -154,9 +153,14 @@ void ofApp::draw() {
 		}
 	ofPopMatrix();
 
-	if(styleCameraPip && styleSource.camera) {
-		styleSource.camera->draw(styleCameraRect.x, styleCameraRect.y,
-			styleCameraRect.width, styleCameraRect.height);
+	// style input images
+	if(stylePip) {
+		if(styleSource.camera) {
+			styleSource.camera->draw(styleCameraRect.x, styleCameraRect.y,
+				styleCameraRect.width, styleCameraRect.height);
+		}
+		styleImage.draw(styleImageRect.x, styleImageRect.y,
+			styleImageRect.width, styleImageRect.height);
 	}
 
 	if(debug) {
@@ -179,13 +183,11 @@ void ofApp::draw() {
 		        "r: restart video\n"
 		        "f: toggle fullscreen\n"
 		        "s: save image\n";
-		if(styleSource.camera) {
-		text += "k: toggle style camera pip\n";
-		}
-		else {
+		if(!styleSource.camera) {
 		text += "k: toggle style input mode\n";
 		}
-		text += "a: toggle auto style change\n"
+		text += "p: toggle style input pip\n"
+		        "a: toggle auto style change\n"
 		        "right: next style\n"
 		        "left: prev style\n"
 		        "space: toggle playback / take style image\n"
@@ -270,10 +272,7 @@ void ofApp::keyPressed(int key) {
 			source.current->play();
 			break;
 		case 'k':
-			if(styleSource.camera) {
-				styleCameraPip = !styleCameraPip;
-			}
-			else {
+			if(!styleSource.camera) {
 				if(styleSource.current) {
 					styleSource.current = nullptr;
 					updateScalerModel();
@@ -283,6 +282,9 @@ void ofApp::keyPressed(int key) {
 					updateScalerSource();
 				}
 			}
+			break;
+		case 'p':
+			stylePip = !stylePip;
 			break;
 		case 'a':
 			styleAuto = !styleAuto;
@@ -345,9 +347,7 @@ void ofApp::mouseExited(int x, int y) {
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h) {
 	scaler.update(w, h);
-	if(styleSource.camera) {
-		updateStyleCameraRect();
-	}
+	updateStyleInputRects();
 }
 
 //--------------------------------------------------------------
@@ -396,12 +396,16 @@ void ofApp::setStyle(std::string & path) {
 	}
 	ofLogVerbose(PACKAGE) << "style now " << ofFilePath::getFileName(path);
 	styleTransfer.setStyle(style.getPixels());
+	styleImage.setFromPixels(style.getPixels());
+	updateStyleInputRects();
 }
 
 //--------------------------------------------------------------
 void ofApp::takeStyle() {
 	if(styleSource.current) {
 		styleTransfer.setStyle(styleSource.current->getPixels());
+		styleImage.setFromPixels(styleSource.current->getPixels());
+		updateStyleInputRects();
 	}
 }
 
@@ -444,7 +448,7 @@ void ofApp::setImageSource() {
 //--------------------------------------------------------------
 void ofApp::updateScalerModel() {
 	scaler.setSize(styleTransfer.getOutput().getWidth(),
-				   styleTransfer.getOutput().getHeight());
+	               styleTransfer.getOutput().getHeight());
 	scaler.update();
 }
 
@@ -457,10 +461,17 @@ void ofApp::updateScalerSource() {
 }
 
 //--------------------------------------------------------------
-void ofApp::updateStyleCameraRect() {
-	float w = (float)ofGetWidth() / 4.f;
-	float h = (float)styleSource.camera->getHeight() * (w/(float)styleSource.camera->getWidth());
-	styleCameraRect.set(ofGetWidth() - w, 0, w, h);
+void ofApp::updateStyleInputRects() {
+	float w = (float)ofGetWidth() / 5.f;
+	float h = 0, y = 0;
+	if(styleSource.camera) {
+		h = (float)styleSource.camera->getHeight() * (w/(float)styleSource.camera->getWidth());
+		styleCameraRect.set(ofGetWidth() - w, y, w, h);
+	}
+	y = h + 10;
+	h = (float)styleImage.getHeight() * (w/(float)styleImage.getWidth());
+	styleImageRect.set(ofGetWidth() - w, y, w, h);
+
 }
 
 //--------------------------------------------------------------

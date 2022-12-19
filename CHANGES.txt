@@ -1,6 +1,7 @@
 0.4.0: TBA
 
-* added optional second style camera input with pip (picture in picture) mode
+* added optional second style camera input
+* added style input pip (picture in picture) mode
 
 * style input mode now turns off after taking style
 

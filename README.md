@@ -149,7 +149,8 @@ Styler can also accept new style images from the current input source or, option
 * `r`: restart video
 * `f`: toggle fullscreen
 * `s`: save output image to `bin/data/output` directory
-* `k`: toggle style input mode / toggle style camera pip
+* `k`: toggle style input mode
+* `p`: toggle style input pip (picture in picture)
 * `a`: toggle auto style change after last frame
 * `LEFT`: previous style
 * `RIGHT`: next style

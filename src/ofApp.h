@@ -73,8 +73,8 @@ class ofApp : public ofBaseApp {
 		/// update scaler for current source
 		void updateScalerSource();
 
-		/// update style camera draw rectfrom win size
-		void updateStyleCameraRect();
+		/// update style input & camera draw rect from win size
+		void updateStyleInputRects();
 
 		// config settings
 		CameraSourceSettings cameraSettings;
@@ -91,6 +91,7 @@ class ofApp : public ofBaseApp {
 
 		bool debug = false; ///< show debug info?
 		bool updateFrame = false; ///< update current output?
+		bool stylePip = false; ///< draw style input & camera pip?
 		bool styleAuto = false;  ///< change style automatically?
 		bool wasLastFrame = false; ///< was the prev source frame the last?
 
@@ -115,7 +116,8 @@ class ofApp : public ofBaseApp {
 			Source *current = nullptr; ///< current style input
 			CameraSource *camera = nullptr; ///< optional second camera input
 		} styleSource;
-		bool styleCameraPip = true; ///< draw style camera PiP (Picture in Picture)?
+		ofImage styleImage; ///< current style input image
+		ofRectangle styleImageRect; ///< style i	mage draw rect
 		ofRectangle styleCameraRect; ///< style camera draw rect
 
 		// input / output sizes
