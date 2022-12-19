@@ -2,6 +2,8 @@
 
 * added optional second style camera input with pip (picture in picture) mode
 
+* style input mode now turns off after taking style
+
 0.3.0: 2022 Nov 25
 
 * change model input images to RGB if wrong image type

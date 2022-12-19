@@ -162,7 +162,6 @@ Example: inputting style from main camera
 2. Press `k` to enter input mode, camera feed will no longer be styled
 3. Present object or image to camera, try to cover most of the camera's view
 4. Press `SPACE` to take snapshot as style image
-5. Press `k` to return to style mode
 6. (Optional) Press `s` to save current styled output image
 
 ### Automatic Style Change

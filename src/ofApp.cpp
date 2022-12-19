@@ -258,6 +258,10 @@ void ofApp::keyPressed(int key) {
 			}
 			else {
 				takeStyle();
+				if(!styleSource.camera) { // done
+					styleSource.current = nullptr;
+					updateScalerModel();
+				}
 			}
 			break;
 		case 'r':
