@@ -14,5 +14,5 @@
 #pragma once
 
 #define PACKAGE	"Styler"
-#define	VERSION	"0.3.0"
+#define	VERSION	"0.4.0"
 #define DESCRIPTION "arbitrary style transformation of an input image, video, or camera source"
