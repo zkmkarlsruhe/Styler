@@ -23,6 +23,9 @@ class Source {
 		virtual void update() = 0;
 		virtual void draw(float x, float y) = 0;
 		virtual void draw(float x, float y, float w, float h) = 0;
+		virtual void draw(ofRectangle & rect) {
+			draw(rect.x, rect.y, rect.width, rect.height);
+		}
 		virtual bool isFrameNew() = 0;
 		virtual const ofPixels & getPixels() = 0;
 		virtual int getWidth()  = 0;

@@ -15,6 +15,12 @@
  */
 #include "ofApp.h"
 
+// style input pip border
+#define PIP_BORDER        5
+#define PIP_BORDER2       10
+#define PIP_BORDER_COLOR  180
+#define PIP_BORDER_RADIUS 5
+
 //--------------------------------------------------------------
 ofApp::ofApp() : scaler(1, 1) {}
 
@@ -142,6 +148,7 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+	ofSetColor(255);
 
 	ofPushMatrix();
 		scaler.apply();
@@ -156,9 +163,17 @@ void ofApp::draw() {
 	// style input images
 	if(stylePip) {
 		if(styleSource.camera) {
+			ofSetColor(PIP_BORDER_COLOR);
+			ofDrawRectRounded(styleCameraRect.x - PIP_BORDER, styleCameraRect.y - PIP_BORDER,
+				styleCameraRect.width + PIP_BORDER2, styleCameraRect.height + PIP_BORDER2, PIP_BORDER_RADIUS);
+			ofSetColor(255);
 			styleSource.camera->draw(styleCameraRect.x, styleCameraRect.y,
 				styleCameraRect.width, styleCameraRect.height);
 		}
+		ofSetColor(PIP_BORDER_COLOR);
+		ofDrawRectRounded(styleImageRect.x - PIP_BORDER, styleImageRect.y - PIP_BORDER,
+			styleImageRect.width + PIP_BORDER2, styleImageRect.height + PIP_BORDER2, PIP_BORDER_RADIUS);
+		ofSetColor(255);
 		styleImage.draw(styleImageRect.x, styleImageRect.y,
 			styleImageRect.width, styleImageRect.height);
 	}
@@ -464,15 +479,14 @@ void ofApp::updateScalerSource() {
 //--------------------------------------------------------------
 void ofApp::updateStyleInputRects() {
 	float w = (float)ofGetWidth() / 5.f;
-	float h = 0, y = 0;
+	float h = 0, x = ofGetWidth() - w - PIP_BORDER, y = PIP_BORDER;
 	if(styleSource.camera) {
-		h = (float)styleSource.camera->getHeight() * (w/(float)styleSource.camera->getWidth());
-		styleCameraRect.set(ofGetWidth() - w, y, w, h);
+		h = (float)styleSource.camera->getHeight() * (w / (float)styleSource.camera->getWidth());
+		styleCameraRect.set(x, y, w, h);
+		y = h + PIP_BORDER2;
 	}
-	y = h + 10;
-	h = (float)styleImage.getHeight() * (w/(float)styleImage.getWidth());
-	styleImageRect.set(ofGetWidth() - w, y, w, h);
-
+	h = (float)styleImage.getHeight() * (w / (float)styleImage.getWidth());
+	styleImageRect.set(x, y, w, h);
 }
 
 //--------------------------------------------------------------
