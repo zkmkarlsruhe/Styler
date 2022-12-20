@@ -291,6 +291,7 @@ void ofApp::keyPressed(int key) {
 			if(styleAuto) {
 				styleAutoTimestamp = ofGetElapsedTimef();
 			}
+			ofLogVerbose(PACKAGE) << "style auto: " << (int)styleAuto;
 			break;
 		case 'f':
 			ofToggleFullscreen();
