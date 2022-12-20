@@ -1,4 +1,4 @@
-0.4.0: TBA
+0.4.0: 2022 Dec 20
 
 * added optional second style camera input
 * added style input pip (picture in picture) mode
