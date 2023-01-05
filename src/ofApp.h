@@ -18,6 +18,7 @@
 #include "ofMain.h"
 #include "ofxTensorFlow2.h"
 #include "ofxStyleTransfer.h"
+#include "ofxOsc.h"
 #include "Source.h"
 #include "Scaler.h"
 #include "config.h"
@@ -45,6 +46,9 @@ class ofApp : public ofBaseApp {
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+
+		/// osc receiver callback
+		void oscReceived(const ofxOscMessage &message);
 
 		/// goto prev style in the stylePaths vector
 		void prevStyle();
@@ -130,4 +134,10 @@ class ofApp : public ofBaseApp {
 
 		std::vector<std::string> stylePaths; ///< paths to available style images
 		std::size_t styleIndex = 0; ///< current style path index
+
+		// osc
+		struct {
+			int port = -1; ///< receiver port
+			ofxOscReceiver *receiver = nullptr; ///< receiver, if used
+		} osc;
 };

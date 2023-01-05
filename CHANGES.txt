@@ -1,3 +1,9 @@
+0.5.0: TBA
+
+* added optional osc receiver and /style/take message
+
+* only rename readme if dest file doesn't exist when making mac dist
+
 0.4.0: 2022 Dec 20
 
 * added optional second style camera input

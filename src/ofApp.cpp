@@ -86,6 +86,15 @@ void ofApp::setup() {
 	setStyle(stylePaths[styleIndex]);
 	styleTransfer.startThread();
 
+	// start receiver, if any
+	if(osc.port > 0) {
+		osc.receiver = new ofxOscReceiver();
+		if(!osc.receiver->setup(osc.port)) {
+			delete osc.receiver;
+			osc.receiver = nullptr;
+		}
+	}
+
 	// summary
 	ofLogVerbose(PACKAGE) << "size: " << size.width << "x" << size.height;
 	ofLogVerbose(PACKAGE) << "static size: " << (staticSize ? "true" : "false");
@@ -97,10 +106,25 @@ void ofApp::setup() {
 	for(auto p : imagePaths) {ofLogVerbose(PACKAGE) << "" << p;}
 	ofLogVerbose(PACKAGE) << videoPaths.size() << " videos:";
 	for(auto p : videoPaths) {ofLogVerbose(PACKAGE) << "" << p;}
+	if(osc.receiver) {
+		ofLogVerbose(PACKAGE) << "receiver port: " << osc.port;
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
+
+	// process received osc events
+	if(osc.receiver) {
+		while(osc.receiver->hasWaitingMessages()) {
+			ofxOscMessage message;
+			if(osc.receiver->getNextMessage(message)) {
+				oscReceived(message);
+			}
+		}
+	}
+
+	// update source frame?
 	source.current->update();
 	if(source.current->isFrameNew() || updateFrame) {
 
@@ -275,10 +299,6 @@ void ofApp::keyPressed(int key) {
 			}
 			else {
 				takeStyle();
-				if(!styleSource.camera) { // done
-					styleSource.current = nullptr;
-					updateScalerModel();
-				}
 			}
 			break;
 		case 'r':
@@ -381,6 +401,13 @@ void ofApp::gotMessage(ofMessage msg) {
 }
 
 //--------------------------------------------------------------
+void ofApp::oscReceived(const ofxOscMessage &message) {
+	if(message.getAddress() == "/style/take") {
+		takeStyle();
+	}
+}
+
+//--------------------------------------------------------------
 void ofApp::prevStyle() {
 	if(styleIndex == 0) {
 		styleIndex = stylePaths.size()-1;
@@ -422,6 +449,10 @@ void ofApp::takeStyle() {
 		styleTransfer.setStyle(styleSource.current->getPixels());
 		styleImage.setFromPixels(styleSource.current->getPixels());
 		updateStyleInputRects();
+	}
+	if(!styleSource.camera) { // done
+		styleSource.current = nullptr;
+		updateScalerModel();
 	}
 }
 

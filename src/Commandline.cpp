@@ -45,6 +45,7 @@ bool Commandline::parse(int argc, char **argv) {
 	parser.add_flag("-f,--fullscreen", app->startFullscreen, "start in fullscreen");
 	parser.add_flag("-a,--auto", app->styleAuto, "enable auto style change");
 	parser.add_option("--auto-time", app->styleAutoTime, "set camera auto style change time in s, default " + ofToString(app->styleAutoTime));
+	parser.add_option("-p,--port", app->osc.port, "OSC listen port, default none");
 	parser.add_flag(  "-l,--list", list, "list camera devices and exit");
 	parser.add_option("-d,--dev", app->cameraSettings.device, "camera device number, default " + ofToString(app->cameraSettings.device));
 	parser.add_option("-r,--rate", app->cameraSettings.rate, "desired camera framerate, default " + ofToString(app->cameraSettings.rate));
@@ -82,6 +83,14 @@ bool Commandline::parse(int argc, char **argv) {
 		ofVideoGrabber grabber;
 		grabber.listDevices();
 		return false;
+	}
+
+	// check osc port
+	if(app->osc.port > 0) {
+		if(app->osc.port <= 1024) {
+			ofLogWarning(PACKAGE) << "ignoring invalid port number <= 1024: " << app->osc.port;
+			app->osc.port = -1;
+		}
 	}
 
 	// check style auto change time

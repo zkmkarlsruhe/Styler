@@ -51,7 +51,8 @@ include $(MACDISTHELPER_DIR)/Makefile-mac-dist.mk
 
 # rename to txt
 postdistdir::
-	cd $(mac.dist.subdir) && mv README.md README.txt
+	cd $(mac.dist.subdir)
+	if [ -f README.md ] ; then mv README.md README.txt ; fi
 
 # override zip and dmg naming to include platform and arch
 mac.dmg.name = $(mac.dist.name.version)-macos-$(shell uname -m)

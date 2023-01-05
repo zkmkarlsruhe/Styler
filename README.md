@@ -186,6 +186,7 @@ Options:
   -f,--fullscreen             start in fullscreen
   -a,--auto                   enable auto style change
   --auto-time FLOAT           set camera auto style change time in s, default 20
+  -p,--port INT               OSC listen port, default none
   -l,--list                   list camera devices and exit
   -d,--dev INT                camera device number, default 0
   -r,--rate INT               desired camera framerate, default 30
@@ -236,6 +237,16 @@ Another option is to use a wrapper script, such as the `styler.sh` script includ
 ~~~
 
 _Note: The `styler.sh` script uses the release build "Styler" .app naming. If you are testing with the debug build, edit the `APP` variable name to "StylerDebug"._
+
+### OSC Communication
+
+#### Receiving
+
+If Styler is started with an OSC port via the `-p` or `--port` flags, it will receive OSC messages.
+
+Message specification:
+
+* **/style/take**: take current style if in style input mode or using style camera
 
 Develop
 -------
