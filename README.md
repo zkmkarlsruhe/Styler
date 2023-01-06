@@ -144,8 +144,8 @@ Styler can also accept new style images from the current input source or, option
 * `v`: video input
 * `c`: camera input
 * `i`: image input
-* `m`: mirror camera
-* `n`: flip camera
+* `m`: mirror camera / (shift) style camera
+* `n`: flip camera / (shift) style camera
 * `r`: restart video
 * `f`: toggle fullscreen
 * `s`: save output image to `bin/data/output` directory
@@ -197,6 +197,8 @@ Options:
   --style-dev INT             optional second style camera device number
   --style-rate INT            desired style camera framerate, default 30
   --style-size TEXT           desired style camera size, default 640x480
+  --style-mirror              mirror style camera horizontally
+  --style-flip                flip style camera vertically
   -v,--verbose                verbose printing
   --version                   print version and exit
 

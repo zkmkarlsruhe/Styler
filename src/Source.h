@@ -96,6 +96,10 @@ struct CameraSourceSettings {
 		int width = 640;
 		int height = 480;
 	} size; ///< desired input size
+	struct {
+		bool vert = false; ///< flip
+		bool horz = false; ///< mirror
+	} mirror;
 };
 
 /// camera input source
@@ -105,11 +109,13 @@ class CameraSource : public Source {
 		// so dynamically create an instance each time
 		ofVideoGrabber *grabber = nullptr;
 		struct {
-			bool vert = false;
-			bool horz = false;
+			bool vert = false; ///< flip
+			bool horz = false; ///< mirror
 		} mirror;
-		ofPixels pixels; ///< mirrored pixels buffer
+		ofImage image; ///< mirrored pixels buffer
 		bool setup(const CameraSourceSettings & settings) {
+			mirror.vert = settings.mirror.vert;
+			mirror.horz = settings.mirror.horz;
 			return setup(settings.size.width, settings.size.height,
 			             settings.rate, settings.device);
 		}
@@ -127,21 +133,29 @@ class CameraSource : public Source {
 				grabber = nullptr;
 			}
 		}
-		void update() {grabber->update();}
-		void draw(float x, float y) {grabber->draw(x, y);}
+		void update() {
+			grabber->update();
+			if(grabber->isFrameNew()) {
+				if(mirror.vert || mirror.horz) {
+					image.setFromPixels(grabber->getPixels());
+					image.mirror(mirror.vert, mirror.horz);
+				}
+				else if(image.isAllocated()) {
+					image.clear();
+				}
+			}
+		}
+		void draw(float x, float y) {
+			if(image.isAllocated()) {image.draw(x, y);}
+			else {grabber->draw(x, y);}
+		}
 		void draw(float x, float y, float w, float h) {
-			grabber->draw(x, y, w, h);
+			if(image.isAllocated()) {image.draw(x, y, w, h);}
+			else {grabber->draw(x, y, w, h);}
 		}
 		bool isFrameNew() {return grabber->isFrameNew();}
 		const ofPixels & getPixels() {
-			if(mirror.vert || mirror.horz) {
-				pixels = grabber->getPixels();
-				pixels.mirror(mirror.vert, mirror.horz);
-				return pixels;
-			}
-			if(pixels.isAllocated()) {
-				pixels.clear();
-			}
+			if(image.isAllocated()) {return image.getPixels();}
 			return grabber->getPixels();
 		}
 		int getWidth() {return grabber->getWidth();}

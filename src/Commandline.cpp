@@ -35,6 +35,8 @@ bool Commandline::parse(int argc, char **argv) {
 	std::string size = "";
 	std::string styleSize = "";
 	bool list = false;
+	bool styleMirror = false;
+	bool styleFlip = false;
 	bool verbose = false;
 	bool version = false;
 	std::string settings = "";
@@ -51,13 +53,15 @@ bool Commandline::parse(int argc, char **argv) {
 	parser.add_option("-r,--rate", app->cameraSettings.rate, "desired camera framerate, default " + ofToString(app->cameraSettings.rate));
 	parser.add_option("-s,--size", size, "desired camera size, default " +
 		ofToString(app->cameraSettings.size.width) + "x" + ofToString(app->cameraSettings.size.height));
-	parser.add_flag("--mirror", app->source.camera.mirror.horz, "mirror camera horizontally");
-	parser.add_flag("--flip", app->source.camera.mirror.vert, "flip camera vertically");
+	parser.add_flag("--mirror", app->cameraSettings.mirror.horz, "mirror camera horizontally");
+	parser.add_flag("--flip", app->cameraSettings.mirror.vert, "flip camera vertically");
 	parser.add_flag("--static-size", app->staticSize, "disable dynamic input -> output size handling");
 	parser.add_option("--style-dev", app->styleCameraSettings.device, "optional second style camera device number");
 	parser.add_option("--style-rate", app->cameraSettings.rate, "desired style camera framerate, default " + ofToString(app->styleCameraSettings.rate));
 	parser.add_option("--style-size", styleSize, "desired style camera size, default " +
 		ofToString(app->styleCameraSettings.size.width) + "x" + ofToString(app->styleCameraSettings.size.height));
+	parser.add_flag("--style-mirror", app->styleCameraSettings.mirror.horz, "mirror style camera horizontally");
+	parser.add_flag("--style-flip", app->styleCameraSettings.mirror.vert, "flip style camera vertically");
 	parser.add_flag("-v,--verbose", verbose, "verbose printing");
 	parser.add_flag("--version", version, "print version and exit");
 

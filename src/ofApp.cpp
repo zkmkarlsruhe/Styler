@@ -217,8 +217,16 @@ void ofApp::draw() {
 		text += "v: video input\n"
 		        "c: camera input\n"
 		        "i: image input\n"
-		        "m: mirror camera\n"
-		        "n: flip camera\n"
+		        "m: mirror camera";
+		if(styleSource.camera) {
+		text += " / (shift) style camera";
+		}
+		text += "\n"
+		        "n: flip camera";
+		if(styleSource.camera) {
+		text += " / (shift) style camera";
+		}
+		text += "\n";
 		        "r: restart video\n"
 		        "f: toggle fullscreen\n"
 		        "s: save image\n";
@@ -232,6 +240,8 @@ void ofApp::draw() {
 		        "space: toggle playback / take style image\n"
 		        "up: next frame / (shift) next video\n"
 		        "down: prev frame / (shift) prev video\n"
+		        "shift+m: \n"
+		        "shift+n: \n",
 		        "drag&drop style image";
 		ofDrawBitmapStringHighlight(text, 4, 12);
 
@@ -290,8 +300,18 @@ void ofApp::keyPressed(int key) {
 		case 'm':
 			source.camera.mirror.horz = !source.camera.mirror.horz;
 			break;
+		case 'M':
+			if(styleSource.camera) {
+				styleSource.camera->mirror.horz = !styleSource.camera->mirror.horz;
+			}
+			break;
 		case 'n':
 			source.camera.mirror.vert = !source.camera.mirror.vert;
+			break;
+		case 'N':
+			if(styleSource.camera) {
+				styleSource.camera->mirror.vert = !styleSource.camera->mirror.vert;
+			}
 			break;
 		case ' ':
 			if(!styleSource.current) {
