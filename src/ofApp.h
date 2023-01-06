@@ -123,6 +123,7 @@ class ofApp : public ofBaseApp {
 		ofImage styleImage; ///< current style input image
 		ofRectangle styleImageRect; ///< style i	mage draw rect
 		ofRectangle styleCameraRect; ///< style camera draw rect
+		bool styleSave = false; ///< save style images when saving?
 
 		// input / output sizes
 		struct {

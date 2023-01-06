@@ -21,6 +21,10 @@
 #define PIP_BORDER_COLOR  180
 #define PIP_BORDER_RADIUS 5
 
+// style save indicator
+#define SAVE_COLOR  220,0,0
+#define SAVE_RADIUS 5
+
 //--------------------------------------------------------------
 ofApp::ofApp() : scaler(1, 1) {}
 
@@ -100,6 +104,7 @@ void ofApp::setup() {
 	ofLogVerbose(PACKAGE) << "static size: " << (staticSize ? "true" : "false");
 	ofLogVerbose(PACKAGE) << "style auto: " << (styleAuto ? "true" : "false");
 	ofLogVerbose(PACKAGE) << "style auto time (camera): " << styleAutoTime;
+	ofLogVerbose(PACKAGE) << "style save: " << (styleSave ? "true" : "false");
 	ofLogVerbose(PACKAGE) << stylePaths.size() << " styles:";
 	for(auto p : stylePaths) {ofLogVerbose(PACKAGE) << "" << p;}
 	ofLogVerbose(PACKAGE) << imagePaths.size() << " images:";
@@ -202,8 +207,14 @@ void ofApp::draw() {
 			styleImageRect.width, styleImageRect.height);
 	}
 
+	// style save status
+	if(styleSave) {
+		ofSetColor(SAVE_COLOR);
+		ofDrawCircle(ofGetWidth() - SAVE_RADIUS - PIP_BORDER - 1, SAVE_RADIUS + PIP_BORDER + 1, SAVE_RADIUS);
+	}
+
+	// help
 	if(debug) {
-		// help
 		std::string text;
 		if(source.current == &source.image) {
 			text = "source: images\n";
@@ -226,10 +237,10 @@ void ofApp::draw() {
 		if(styleSource.camera) {
 		text += " / (shift) style camera";
 		}
-		text += "\n";
+		text += "\n"
 		        "r: restart video\n"
 		        "f: toggle fullscreen\n"
-		        "s: save image\n";
+		        "s: save image / (shift) toggle style save\n";
 		if(!styleSource.camera) {
 		text += "k: toggle style input mode\n";
 		}
@@ -358,6 +369,9 @@ void ofApp::keyPressed(int key) {
 			ofLogVerbose(PACKAGE) << "saved " << path;
 			break;
 		}
+		case 'S':
+			styleSave = !styleSave;
+			break;
 		case 'd':
 			debug = !debug;
 			break;
@@ -473,6 +487,12 @@ void ofApp::takeStyle() {
 	if(!styleSource.camera) { // done
 		styleSource.current = nullptr;
 		updateScalerModel();
+	}
+	if(styleSave) {
+		ofDirectory::createDirectory("output-style");
+		std::string path = "output-style/"+ofGetTimestampString("%m-%d-%Y_%H-%M-%S")+".png";
+		ofSaveImage(styleImage.getPixels(), path);
+		ofLogVerbose(PACKAGE) << "saved style " << path;
 	}
 }
 

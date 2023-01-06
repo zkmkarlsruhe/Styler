@@ -1,6 +1,10 @@
 0.5.0: TBA
 
+* fixed cmaera source drawing not reflecting mirror / flip options
+
 * added optional osc receiver and /style/take message
+* added style camera mirror and flip options & key commands
+* added optional style input saving to bin/data/output-style
 
 * only rename readme if dest file doesn't exist when making mac dist
 

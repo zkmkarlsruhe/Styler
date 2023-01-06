@@ -138,6 +138,8 @@ While running, any images drag & dropped onto the Styler window will be loaded a
 
 Styler can also accept new style images from the current input source or, optionally, a second live camera input. See The "Commandline Options" section for info on enabling the style camera.
 
+If style saving is enabled, either via the commandline option or key command, the style input image is saved to the `bin/data/output-style` directory when a new style frame is taken. A red indicator is drawn in the upper right corner if style saving is on.
+
 ### Key Commands
 
 * `d`: toggle debug mode, shows on-screen help
@@ -148,7 +150,7 @@ Styler can also accept new style images from the current input source or, option
 * `n`: flip camera / (shift) style camera
 * `r`: restart video
 * `f`: toggle fullscreen
-* `s`: save output image to `bin/data/output` directory
+* `s`: save output image to `bin/data/output` / (shift) toggle style save to `bin/data/output-style`
 * `k`: toggle style input mode
 * `p`: toggle style input pip (picture in picture)
 * `a`: toggle auto style change after last frame
@@ -199,6 +201,7 @@ Options:
   --style-size TEXT           desired style camera size, default 640x480
   --style-mirror              mirror style camera horizontally
   --style-flip                flip style camera vertically
+  --style-save                save style images when taking
   -v,--verbose                verbose printing
   --version                   print version and exit
 
