@@ -270,7 +270,7 @@ git commit push --tags
 ### macOS build distribution
 
 1. Set Signing & Capabilities Team
-2. Enable Hardened Runtime
+2. Enable the Hardened Runtime capability, then check "Disable Library Validation" and "Camera"
 3. Notarize app
 4. Bundle app and data into Styler-version distribution folder
 5. Compress distribution folder into Styler-version.dmg disk image
