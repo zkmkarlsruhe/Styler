@@ -1,6 +1,6 @@
 0.5.0: 2022 Jan 12
 
-* fixed cmaera source drawing not reflecting mirror / flip options
+* fixed camera source drawing not reflecting mirror / flip options
 
 * added optional osc receiver and /style/take message
 * added style camera mirror and flip options & key commands
