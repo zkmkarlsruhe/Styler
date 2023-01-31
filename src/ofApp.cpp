@@ -79,9 +79,6 @@ void ofApp::setup() {
 	// output image
 	scaler.setSize(size.width, size.height);
 	ofSetWindowShape(size.width, size.height);
-	if(startFullscreen) {
-		ofToggleFullscreen();
-	}
 
 	// load model
 	if(!styleTransfer.setup(size.width, size.height)) {
@@ -177,6 +174,13 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+
+	// start later for X on Linux
+	if(startFullscreen) {
+		ofToggleFullscreen();
+		startFullscreen = false;
+	}
+
 	ofSetColor(255);
 
 	ofPushMatrix();

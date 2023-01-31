@@ -1,3 +1,7 @@
+0.5.1: TBA
+
+* fixed -f/--fullscreen not working on linux
+
 0.5.0: 2022 Jan 12
 
 * fixed camera source drawing not reflecting mirror / flip options
