@@ -14,7 +14,7 @@ Copyright (c) 2022 Dan Wilcox.
 
 GPL v3 License.
 
-Parts adapted from ofxTensorFlow2 example_style_transfer_arbitrary under a BSD Simplified License.
+Parts adapted from ofxTensorFlow2 `example_style_transfer_arbitrary` under a BSD Simplified License.
 
 Dependencies
 ------------
@@ -252,6 +252,23 @@ If Styler is started with an OSC port via the `-p` or `--port` flags, it will re
 Message specification:
 
 * **/style/take**: take current style if in style input mode or using style camera
+
+##### serial-button-osc
+
+For example, a hardware style take button can be made using an Arduino microcontroller and some Python scripting. When the button is pressed, a character is sent over the serial connection, and triggers sending an OSC message. Using the [serial-button-osc](https://github.com/zkmkarlsruhe/serial-button-osc) project and it's included Arduino sketch, run the Python script with the serial device path an desired OSC address and port 5005: 
+
+Terminal 1:
+~~~
+./styler -p 5005
+~~~
+
+Terminal 2:
+~~~
+cd serial-button-osc
+./serial-button-osc -p 5005 /dev/tty.usbserial-310 /record
+~~~
+
+When Styler is in style input mode, pressing the button will take the current image as the new style image.
 
 Develop
 -------
