@@ -17,11 +17,11 @@
 /// the model accepts a style image and applies the style to an input image,
 /// the output image will be the same size as the input image
 ///
-/// note: the model requires input input images to be sized in multiples of 32,
+/// note: the model requires input images to be sized in multiples of 32,
 ///       images are resized between input/output as needed, images must be RGB
 ///
-/// note: input style images are required to 256x256, style images are resized
-///       as needed, style images must be RGB
+/// note: input style images are required to be 256x256, style images are
+///       resized as needed, style images must be RGB
 ///
 /// basic usage example:
 ///
@@ -34,6 +34,7 @@
 /// void ofApp::setup() {
 ///     ...
 ///     styleTransfer.setup(640, 480, "path/to/modeldir");
+///     styleTransfer.setStyle(ofImage("path/to/style.jpg").getPixels());
 ///     camera.setup(640, 480);
 /// }
 ///
