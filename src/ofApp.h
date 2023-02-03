@@ -121,7 +121,7 @@ class ofApp : public ofBaseApp {
 			CameraSource *camera = nullptr; ///< optional second camera input
 		} styleSource;
 		ofImage styleImage; ///< current style input image
-		ofRectangle styleImageRect; ///< style i	mage draw rect
+		ofRectangle styleImageRect; ///< style image draw rect
 		ofRectangle styleCameraRect; ///< style camera draw rect
 		bool styleSave = false; ///< save style images when saving?
 

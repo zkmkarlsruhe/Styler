@@ -202,6 +202,7 @@ Options:
   --style-mirror              mirror style camera horizontally
   --style-flip                flip style camera vertically
   --style-save                save style images when taking
+  --style-pip                 show style picture in picture
   -v,--verbose                verbose printing
   --version                   print version and exit
 
@@ -265,7 +266,7 @@ Terminal 1:
 Terminal 2:
 ~~~
 cd serial-button-osc
-./serial-button-osc -p 5005 /dev/tty.usbserial-310 /record
+./serial-button-osc -p 5005 /dev/tty.usbserial-310 /style/take
 ~~~
 
 When Styler is in style input mode, pressing the button will take the current image as the new style image.

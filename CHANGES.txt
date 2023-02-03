@@ -2,6 +2,8 @@
 
 * fixed -f/--fullscreen not working on linux
 
+* added --style-pip to open with style picture in picture view
+
 0.5.0: 2022 Jan 12
 
 * fixed camera source drawing not reflecting mirror / flip options

@@ -63,6 +63,7 @@ bool Commandline::parse(int argc, char **argv) {
 	parser.add_flag("--style-mirror", app->styleCameraSettings.mirror.horz, "mirror style camera horizontally");
 	parser.add_flag("--style-flip", app->styleCameraSettings.mirror.vert, "flip style camera vertically");
 	parser.add_flag("--style-save", app->styleSave, "save style images when taking");
+	parser.add_flag("--style-pip", app->stylePip, "show style picture in picture");
 	parser.add_flag("-v,--verbose", verbose, "verbose printing");
 	parser.add_flag("--version", version, "print version and exit");
 
