@@ -1,10 +1,12 @@
-0.5.1: TBA
+0.6.0: 2023 Feb 20
 
 * fixed -f/--fullscreen not working on linux
+* fixed bad osc address in readme example
 
 * added --style-pip to open with style picture in picture view
+* added serial-button-osc hardware button -> osc info
 
-0.5.0: 2022 Jan 12
+0.5.0: 2023 Jan 12
 
 * fixed camera source drawing not reflecting mirror / flip options
 
