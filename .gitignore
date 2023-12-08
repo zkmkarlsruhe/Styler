@@ -3,6 +3,7 @@
 config.make
 bin/data/model*
 bin/data/output
+bin/data/output-style
 bin/data/video/*.mp4
 bin/data/video/*.mov
 bin/data/video/*.avi
