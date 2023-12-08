@@ -366,13 +366,9 @@ void ofApp::keyPressed(int key) {
 		case 'f':
 			ofToggleFullscreen();
 			break;
-		case 's': {
-			ofDirectory::createDirectory("output");
-			std::string path = "output/"+ofGetTimestampString("%m-%d-%Y_%H-%M-%S")+".png";
-			ofSaveImage(styleTransfer.getOutput().getPixels(), path);
-			ofLogVerbose(PACKAGE) << "saved " << path;
+		case 's':
+			saveOutputImage();
 			break;
-		}
 		case 'S':
 			styleSave = !styleSave;
 			break;
@@ -443,6 +439,12 @@ void ofApp::oscReceived(const ofxOscMessage &message) {
 	if(message.getAddress() == "/style/take") {
 		takeStyle();
 	}
+	else if(message.getAddress() == "/style/save") {
+		saveStyleImage();
+	}
+	else if(message.getAddress() == "/output/save") {
+		saveOutputImage();
+	}
 }
 
 //--------------------------------------------------------------
@@ -493,11 +495,24 @@ void ofApp::takeStyle() {
 		updateScalerModel();
 	}
 	if(styleSave) {
-		ofDirectory::createDirectory("output-style");
-		std::string path = "output-style/"+ofGetTimestampString("%m-%d-%Y_%H-%M-%S")+".png";
-		ofSaveImage(styleImage.getPixels(), path);
-		ofLogVerbose(PACKAGE) << "saved style " << path;
+		saveStyleImage();
 	}
+}
+
+//--------------------------------------------------------------
+void ofApp::saveStyleImage() {
+	ofDirectory::createDirectory("output-style");
+	std::string path = "output-style/"+ofGetTimestampString("%m-%d-%Y_%H-%M-%S")+".png";
+	ofSaveImage(styleImage.getPixels(), path);
+	ofLogVerbose(PACKAGE) << "saved style " << path;
+}
+
+//--------------------------------------------------------------
+void ofApp::saveOutputImage() {
+	ofDirectory::createDirectory("output");
+	std::string path = "output/"+ofGetTimestampString("%m-%d-%Y_%H-%M-%S")+".png";
+	ofSaveImage(styleTransfer.getOutput().getPixels(), path);
+	ofLogVerbose(PACKAGE) << "saved " << path;
 }
 
 //--------------------------------------------------------------

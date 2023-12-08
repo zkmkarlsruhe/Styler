@@ -246,13 +246,13 @@ _Note: The `styler.sh` script uses the release build "Styler" .app naming. If yo
 
 ### OSC Communication
 
-#### Receiving
-
 If Styler is started with an OSC port via the `-p` or `--port` flags, it will receive OSC messages.
 
 Message specification:
 
 * **/style/take**: take current style if in style input mode or using style camera
+* **/style/save**: save current style image
+* **/output/save**: save current output image
 
 ##### serial-button-osc
 
@@ -260,7 +260,7 @@ For example, a hardware style take button can be made using an Arduino microcont
 
 Terminal 1:
 ~~~
-./styler -p 5005
+./styler.sh -p 5005
 ~~~
 
 Terminal 2:

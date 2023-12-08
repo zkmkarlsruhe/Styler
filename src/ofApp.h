@@ -60,6 +60,7 @@ class ofApp : public ofBaseApp {
 		void setStyle(std::string & path);
 
 		/// take current source frame as style image
+		/// optionally saves style image if styleSave = true
 		void takeStyle();
 
 		/// switch to video source
@@ -79,6 +80,12 @@ class ofApp : public ofBaseApp {
 
 		/// update style input & camera draw rect from win size
 		void updateStyleInputRects();
+
+		/// save the current style image
+		void saveStyleImage();
+
+		/// save current output image
+		void saveOutputImage();
 
 		// config settings
 		CameraSourceSettings cameraSettings;

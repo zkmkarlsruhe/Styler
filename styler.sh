@@ -12,7 +12,7 @@
 # This code has been developed at ZKM | Hertz-Lab as part of „The Intelligent
 # Museum“ generously funded by the German Federal Cultural Foundation.
 
-# if using the debug build, change APP to StylerOSCDebug
+# if using the debug build, change APP to StylerDebug
 APP=Styler
 DIR="$(dirname $0)/bin"
 EXEC=${DIR}/${APP}
