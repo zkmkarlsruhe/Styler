@@ -443,7 +443,14 @@ void ofApp::oscReceived(const ofxOscMessage &message) {
 		saveStyleImage();
 	}
 	else if(message.getAddress() == "/output/save") {
-		saveOutputImage();
+		if(message.getNumArgs() == 0) {
+                        saveOutputImage();
+                }
+                else if((message.getTypeString() == "i" || message.getTypeString() == "f")
+                        && message.getArgAsInt(0) > 0) {
+                        saveOutputImage();
+                }
+
 	}
 }
 
